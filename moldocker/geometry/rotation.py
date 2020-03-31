@@ -34,7 +34,7 @@ def random_rotation_matrices(size):
             axis=np.random.randn(3),
             theta=(2 * np.pi * np.random.rand(1)[0])
         )
-        for _ in size
+        for _ in range(size)
     ])
 
 
