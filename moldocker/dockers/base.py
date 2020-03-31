@@ -1,32 +1,23 @@
 import numpy as np
-from tqdm import tqdm
-from sklearn.cluster import KMeans
-
-from docking.zeolite import voronoi 
-import docking.zeolite.utils as zeoutils
-
-
-CLEARANCE = 1.0
-DEFAULT_ATTEMPTS = 100
-VORONOI_POINTS = 10
-BEST_STRUCTURES = 10
-MAX_LOADING = True
+from moldocker import utils
 
 
 class Docker:
+    """Base class to dock a guest into a crystal"""
+
     def __init__(
         self,
-        substrate,
-        molecule,
-        clearance=CLEARANCE,
+        host,
+        guest,
+        sampler,
         **kwargs
     ):
-        self.substrate = substrate.copy()
-        self.molecule = molecule.copy().get_centered_molecule()
-        self.substrate.DISTANCE_TOLERANCE = clearance
+        self.host = host
+        self.guest = guest
+        self.sampler = sampler
 
-    def rotate_molecule(self, theta=None, axis=None):
-        molecule = self.molecule.copy()
+    def rotate_guest(self, theta=None, axis=None):
+        guest = self.guest.copy()
 
         if theta is None:
             theta = 2 * np.pi * np.random.rand(1)[0]
@@ -34,71 +25,70 @@ class Docker:
         if axis is None:
             axis = np.random.rand(3)
 
-        molecule.rotate_sites(theta=theta, axis=axis)
-        return molecule
+        guest.rotate_sites(theta=theta, axis=axis)
 
-    def translate_substrate(self, coords):
-        """Translates all nodes of the substrate to the given coords.
+        return guest
+
+    def translate_host(self, coords):
+        """Translates all nodes of the host to the given coords.
 
         Args:
             coords (np.array): (3, ) array with cartesian coordinates.
         """
 
-        substrate = self.substrate.copy()
-        substrate.DISTANCE_TOLERANCE = self.substrate.DISTANCE_TOLERANCE
-        substrate.translate_sites(
-            range(len(self.substrate)),
+        host = self.host.copy()
+        host.translate_sites(
+            range(len(self.host)),
             -coords,
             frac_coords=False
         )
 
-        return substrate
+        return host
 
-    def get_docking_points(self):
-        raise NotImplementedError
-
-    def dock(self, attempts=DEFAULT_ATTEMPTS, maximize_loading=MAX_LOADING):
-        """Docks the molecule into the substrate.
+    def dock(self, attempts):
+        """Docks the guest into the host.
         """
 
-        docking_points = self.get_docking_points()
-        docked_structures = []
+        poses = []
+        for point in self.sampler.get_points(self.host):
+            poses += self.dock_to_point(point, attempts)
 
-        for point in tqdm(
-            docking_points,
-            'testing docking points'
-        ):
-            for idx in tqdm(range(attempts), 'attempts'):
-                mol = self.rotate_molecule()
-                subst = self.translate_substrate(point)
+        return poses
 
-                try:
-                    docked = zeoutils.join_structures(
-                        mol,
-                        subst,
-                        validate_proximity=True
-                    )
-                    docked_structures.append(docked)
+    def dock_to_point(self, point, attempts):
+        subst = self.translate_host(point)
 
-                except ValueError:
-                    pass
+        poses = []
+        for _ in range(attempts):
+            mol = self.rotate_guest()
 
-        return docked_structures
+            try:
+                docked = utils.join_structures(
+                    mol,
+                    subst,
+                    validate_proximity=True
+                )
+                poses.append(docked)
 
-    def copy(self, substrate=None, molecule=None):
+            except ValueError:
+                pass
+
+        return poses
+
+    def copy(self):
         return self.__class__(
-            self.substrate if substrate is None else substrate,
-            self.molecule if molecule is None else molecule,
-            clearance=self.substrate.DISTANCE_TOLERANCE
+            self.host.copy(),
+            self.guest.copy(),
+            self.sampler
         )
 
-    def increase_loading(self, structures, attempts=DEFAULT_ATTEMPTS):
+    def increase_loading(self, structures, attempts):
         high_loading_structs = []
         for struct in tqdm(
             structures,
             'increasing the loading of the given structures'
         ):
-            subdocker = self.copy(substrate=struct)
+            subdocker = self.copy(host=struct)
             subdocked_structs = subdocker.dock(attempts)
             high_loading_structs += subdocked_structs
 
