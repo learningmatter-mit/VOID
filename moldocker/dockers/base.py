@@ -5,13 +5,7 @@ from moldocker import utils
 class Docker:
     """Base class to dock a guest into a crystal"""
 
-    def __init__(
-        self,
-        host,
-        guest,
-        sampler,
-        **kwargs
-    ):
+    def __init__(self, host, guest, sampler, **kwargs):
         self.host = host
         self.guest = guest
         self.sampler = sampler
@@ -37,11 +31,7 @@ class Docker:
         """
 
         host = self.host.copy()
-        host.translate_sites(
-            range(len(self.host)),
-            -coords,
-            frac_coords=False
-        )
+        host.translate_sites(range(len(self.host)), -coords, frac_coords=False)
 
         return host
 
@@ -63,11 +53,7 @@ class Docker:
             mol = self.rotate_guest()
 
             try:
-                docked = utils.join_structures(
-                    mol,
-                    subst,
-                    validate_proximity=True
-                )
+                docked = utils.join_structures(mol, subst, validate_proximity=True)
                 poses.append(docked)
 
             except ValueError:
@@ -76,22 +62,15 @@ class Docker:
         return poses
 
     def copy(self):
-        return self.__class__(
-            self.host.copy(),
-            self.guest.copy(),
-            self.sampler
-        )
+        return self.__class__(self.host.copy(), self.guest.copy(), self.sampler)
 
     def increase_loading(self, structures, attempts):
         high_loading_structs = []
         for struct in tqdm(
-            structures,
-            'increasing the loading of the given structures'
+            structures, "increasing the loading of the given structures"
         ):
             subdocker = self.copy(host=struct)
             subdocked_structs = subdocker.dock(attempts)
             high_loading_structs += subdocked_structs
 
         return high_loading_structs
-    
-

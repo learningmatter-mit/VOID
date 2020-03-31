@@ -5,7 +5,7 @@ Requires changes in the pymatgen interface to work correctly.
 
 import numpy as np
 from pymatgen.core.periodic_table import Specie
-import pymatgen.io.zeopp as zeopp 
+import pymatgen.io.zeopp as zeopp
 from pymatgen.analysis.bond_valence import BVAnalyzer
 
 from moldocker import utils
@@ -31,7 +31,7 @@ class VoronoiSampler(Sampler):
         self.min_radius = min_radius
 
     def remove_oxygen_from_structure(self):
-        self._structure.remove_species('O')
+        self._structure.remove_species("O")
 
     def get_voronoi_nodes(self):
         try:
@@ -40,9 +40,7 @@ class VoronoiSampler(Sampler):
             radii = None
 
         nodes, edge_center, face_center = zeopp.get_voronoi_nodes(
-            self._structure,
-            radii,
-            probe_rad=self.probe_radius
+            self._structure, radii, probe_rad=self.probe_radius
         )
 
         return nodes, edge_center, face_center
@@ -56,23 +54,22 @@ class VoronoiSampler(Sampler):
         radii = {}
         for k, v in valence_dict.items():
             radii[k] = float(Specie(k, v).ionic_radius)
-        
+
         return radii
-    
+
     def remove_close_nodes(self, nodes, radius):
         """Removes voronoi nodes with radius smaller than
             `radius`.
         """
 
         remove_idx = [
-            idx 
+            idx
             for idx, site in enumerate(nodes.sites)
-            if site.properties['voronoi_radius'] < radius
+            if site.properties["voronoi_radius"] < radius
         ]
         nodes.remove_sites(remove_idx)
 
         return nodes
-
 
     def get_points(self, structure):
         self._structure = structure.copy()
@@ -86,12 +83,7 @@ class VoronoiSampler(Sampler):
 
 
 class VoronoiClustering(VoronoiSampler):
-    def __init__(
-        self,
-        *args,
-        n_clusters,
-        **kwargs
-    ):
+    def __init__(self, *args, n_clusters, **kwargs):
         super().__init__(*args, **kwargs)
         self.n_clusters = n_clusters
 
@@ -114,15 +106,13 @@ class VoronoiClustering(VoronoiSampler):
             best_sites = []
             for i in range(self.n_clusters):
                 sites_cluster = [
-                    site
-                    for site, cluster in zip(sites, labels)
-                    if cluster == i
+                    site for site, cluster in zip(sites, labels) if cluster == i
                 ]
 
                 if len(sites_cluster) > 0:
                     best_site = max(
                         sites_cluster,
-                        key=lambda site: site.properties['voronoi_radius'],
+                        key=lambda site: site.properties["voronoi_radius"],
                     )
 
                     best_sites.append(best_site)
@@ -131,7 +121,7 @@ class VoronoiClustering(VoronoiSampler):
 
         if len(self.nodes.cart_coords) == 0:
             return []
-        
+
         clusters = cluster_points(self.nodes.cart_coords)
         best_sites = select_sites(self.nodes.sites, clusters)
 

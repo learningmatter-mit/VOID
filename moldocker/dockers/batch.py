@@ -23,7 +23,7 @@ class BatchDocker(Docker):
         Args:
             coords (np.array): (3, ) array with cartesian coordinates.
         """
-        
+
         translated = self.host.cart_coords - point
 
         return np.repeat(translated[None, ...], attempts, axis=0)
@@ -41,28 +41,31 @@ class BatchDocker(Docker):
         ]
 
         return poses
-        
+
     def _pose_from_coords(self, host_coords, guest_coords):
         coords = np.concatenate([host_coords, guest_coords], axis=0)
 
-        labels = ['host'] * len(self.host) + ['guest'] * len(self.guest)
+        labels = ["host"] * len(self.host) + ["guest"] * len(self.guest)
 
         # TODO: add previous properties if they already exist in
         # the host
-        props = {'label': labels}
-            
+        props = {"label": labels}
+
         return Structure(
             species=(self.host.species + self.guest.species),
             coords=coords,
             lattice=self.host.lattice.matrix,
             coords_are_cartesian=True,
-            site_properties=props
+            site_properties=props,
         )
 
-
     def get_distance_matrices(self, host_batch, guest_batch):
-        frac_host = self.host.lattice.get_fractional_coords(host_batch.reshape(-1, 3)).reshape(host_batch.shape)
-        frac_guest = self.host.lattice.get_fractional_coords(guest_batch.reshape(-1, 3)).reshape(guest_batch.shape)
+        frac_host = self.host.lattice.get_fractional_coords(
+            host_batch.reshape(-1, 3)
+        ).reshape(host_batch.shape)
+        frac_guest = self.host.lattice.get_fractional_coords(
+            guest_batch.reshape(-1, 3)
+        ).reshape(guest_batch.shape)
 
         distance_matrices = [
             self.host.lattice.get_all_distances(f1, f2)
@@ -73,4 +76,3 @@ class BatchDocker(Docker):
 
     def satisfy_distance_criteria(self, dmatrix):
         return dmatrix.min() > 1.5
-

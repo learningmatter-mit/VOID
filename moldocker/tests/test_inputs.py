@@ -4,16 +4,17 @@ import unittest as ut
 
 
 thisdir = os.path.dirname(os.path.abspath(__file__))
-inpath = os.path.join(thisdir, 'files')
+inpath = os.path.join(thisdir, "files")
 
 print(inpath)
 
-def load_structure(filename='AFI.cif'):
+
+def load_structure(filename="AFI.cif"):
     path = os.path.join(inpath, filename)
     return Structure.from_file(path)
 
 
-def load_molecule(filename='molecule.xyz'):
+def load_molecule(filename="molecule.xyz"):
     path = os.path.join(inpath, filename)
     return Molecule.from_file(path)
 
@@ -30,5 +31,5 @@ class TestInputs(ut.TestCase):
         self.assertEqual(len(self.molecule), 47)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ut.main()

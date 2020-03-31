@@ -3,7 +3,7 @@ from tqdm import tqdm
 from sklearn.cluster import KMeans
 
 from moldocker.dockers.base import Docker
-from docking.zeolite import voronoi 
+from docking.zeolite import voronoi
 import docking.zeolite.utils as zeoutils
 
 
@@ -26,15 +26,10 @@ class VoronoiDocker(Docker):
     ):
         super().__init__(*args, **kwargs)
         voronoi_nodes_creator = voronoi.VoronoiNodes(
-            probe_radius=probe_radius,
-            remove_oxygen=remove_oxygen
+            probe_radius=probe_radius, remove_oxygen=remove_oxygen
         )
-        self.nodes = voronoi_nodes_creator(
-            self.substrate,
-            min_radius=min_radius
-        )
+        self.nodes = voronoi_nodes_creator(self.substrate, min_radius=min_radius)
         self.num_voronoi_points = num_voronoi_points
-
 
     def select_best_structures(self, structures, n=BEST_STRUCTURES):
         """Select the best structures from the given list
@@ -46,18 +41,15 @@ class VoronoiDocker(Docker):
             n (int): number of structures to select
         """
         fitness = [
-            zeoutils.get_molecule_structure_distances(
-                struct, len(self.substrate)
-            )
+            zeoutils.get_molecule_structure_distances(struct, len(self.substrate))
             for struct in structures
         ]
 
         best_structures = [
-            st 
-            for st, _ in sorted(zip(structures, fitness), key=lambda x: x[1], reverse=True)
+            st
+            for st, _ in sorted(
+                zip(structures, fitness), key=lambda x: x[1], reverse=True
+            )
         ]
 
         return best_structures[:n]
-
-
-

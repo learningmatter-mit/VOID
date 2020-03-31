@@ -4,9 +4,7 @@ from pymatgen.core import Molecule, Structure
 
 class Complex:
     def __init__(
-        self,
-        host,
-        guest,
+        self, host, guest,
     ):
         """Constructor for host-guest pair.
 
@@ -14,7 +12,7 @@ class Complex:
             host (Structure)
             guest (Molecule)
         """
-            
+
         self.host = host
         self.guest = guest
 

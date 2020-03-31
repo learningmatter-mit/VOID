@@ -38,4 +38,3 @@ def get_molecule_structure_distances(
 def get_loading(substrate, molecule, joint_structure):
     num_molecule_atoms = len(joint_structure) - len(substrate)
     return num_molecule_atoms // len(molecule)
-

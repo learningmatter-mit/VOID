@@ -12,11 +12,7 @@ class TestBatch(ut.TestCase):
         self.host = load_structure()
         self.guest = load_molecule()
         self.sampler = OriginSampler()
-        self.docker = BatchDocker(
-            self.host,
-            self.guest,
-            self.sampler
-        )
+        self.docker = BatchDocker(self.host, self.guest, self.sampler)
 
     def test_rotate(self):
         coords = self.docker.rotate_guest(10)
@@ -41,5 +37,5 @@ class TestBatch(ut.TestCase):
         self.assertTrue(pose.distance_matrix[:72, 72:].min() > 1.5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ut.main()
