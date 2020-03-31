@@ -11,7 +11,7 @@ class TestDocker(ut.TestCase):
     def setUp(self):
         self.host = load_structure()
         self.guest = load_molecule()
-        self.sampler = OriginSampler
+        self.sampler = OriginSampler()
         self.docker = Docker(
             self.host,
             self.guest,

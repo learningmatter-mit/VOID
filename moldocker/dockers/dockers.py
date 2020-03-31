@@ -35,49 +35,6 @@ class VoronoiDocker(Docker):
         )
         self.num_voronoi_points = num_voronoi_points
 
-    def get_docking_points(self):
-        """Select best sites according to a k-means clustering
-            algorithm. It provides us with a better selection of
-            which points to try in the zeolite. Periodic boundary
-            conditions are NOT taken into consideration when
-            calculating the distances. The best sites are those
-            further away from the zeolite (largest voronoi radius).
-        """
-
-        def cluster_points(X):
-            n_clusters = min(len(X), self.num_voronoi_points)
-            kmeans = KMeans(n_clusters=n_clusters)
-            kmeans.fit(X)
-            return kmeans.labels_
-
-        def select_sites(sites, labels):
-            best_sites = []
-            for i in range(self.num_voronoi_points):
-                sites_cluster = [
-                    site
-                    for site, cluster in zip(sites, labels)
-                    if cluster == i
-                ]
-
-                if len(sites_cluster) > 0:
-                    best_site = max(
-                        sites_cluster,
-                        key=lambda site: site.properties['voronoi_radius'],
-                    )
-
-                    best_sites.append(best_site)
-
-            return best_sites
-
-        if len(self.nodes.cart_coords) == 0:
-            return []
-        
-        clusters = cluster_points(self.nodes.cart_coords)
-        best_sites = select_sites(self.nodes.sites, clusters)
-
-        if len(best_sites) == 0:
-            return []
-        return [site.coords for site in best_sites]
 
     def select_best_structures(self, structures, n=BEST_STRUCTURES):
         """Select the best structures from the given list
