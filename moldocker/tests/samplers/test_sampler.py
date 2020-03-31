@@ -3,11 +3,6 @@ import unittest as ut
 from ..test_inputs import load_structure, load_molecule
 
 
-class DummySampler:
-    def get_points(self):
-        return [np.array([0, 0, 0])]
-
-
 class TestSampler(ut.TestCase):
     def setUp(self):
         self.host = load_structure()

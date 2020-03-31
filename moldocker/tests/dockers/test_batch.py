@@ -2,16 +2,16 @@ import numpy as np
 import unittest as ut
 
 from moldocker.dockers import BatchDocker
+from moldocker.samplers import OriginSampler
 
 from ..test_inputs import load_structure, load_molecule
-from ..samplers.test_sampler import DummySampler
 
 
 class TestBatch(ut.TestCase):
     def setUp(self):
         self.host = load_structure()
         self.guest = load_molecule()
-        self.sampler = DummySampler
+        self.sampler = OriginSampler()
         self.docker = BatchDocker(
             self.host,
             self.guest,

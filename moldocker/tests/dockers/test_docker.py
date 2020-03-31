@@ -1,15 +1,17 @@
 import numpy as np
 import unittest as ut
-from ..test_inputs import load_structure, load_molecule
-from ..samplers.test_sampler import DummySampler
+
 from moldocker.dockers import Docker
+from moldocker.samplers import OriginSampler
+
+from ..test_inputs import load_structure, load_molecule
 
 
 class TestDocker(ut.TestCase):
     def setUp(self):
         self.host = load_structure()
         self.guest = load_molecule()
-        self.sampler = DummySampler
+        self.sampler = OriginSampler
         self.docker = Docker(
             self.host,
             self.guest,
@@ -44,14 +46,6 @@ class TestDocker(ut.TestCase):
     def test_dock(self):
         poses = self.docker.dock(10)
         self.assertIsInstance(poses, list)
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
