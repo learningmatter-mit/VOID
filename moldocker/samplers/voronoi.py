@@ -93,6 +93,7 @@ class VoronoiClustering(VoronoiSampler):
         calculating the distances. The best sites are those
         further away from the zeolite (largest voronoi radius).
     """
+
     def __init__(self, *args, n_clusters, **kwargs):
         super().__init__(*args, **kwargs)
         self.n_clusters = n_clusters

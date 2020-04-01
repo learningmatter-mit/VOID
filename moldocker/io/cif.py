@@ -9,4 +9,3 @@ def read_cif(path, primitive=True):
 def write_cif(path, structure):
     writer = CifWriter(structure)
     writer.write_file(path)
-

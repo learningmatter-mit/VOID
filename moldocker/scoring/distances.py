@@ -20,4 +20,3 @@ class MinDistanceScore(ThresholdScore):
 class MeanDistanceScore(ThresholdScore):
     def __call__(self, distance_matrix, axis=1):
         return distance_matrix.min(axis=axis).mean() - self.threshold
-

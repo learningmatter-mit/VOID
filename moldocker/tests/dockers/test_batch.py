@@ -14,7 +14,9 @@ class TestBatch(ut.TestCase):
         self.guest = load_molecule()
         self.sampler = OriginSampler()
         self.scoring = MinDistanceScore(threshold=1.5)
-        self.docker = BatchDocker(self.host, self.guest, self.sampler, scoring_fn=self.scoring)
+        self.docker = BatchDocker(
+            self.host, self.guest, self.sampler, scoring_fn=self.scoring
+        )
 
     def test_rotate(self):
         coords = self.docker.rotate_guest(10)

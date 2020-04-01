@@ -26,9 +26,8 @@ def get_main_parser():
     )
     cmd_parser.add_argument(
         "--trainable_gauss",
-        action='store_true',
+        action="store_true",
         help="If set, sets gaussians as learnable parameters (default: False)",
     )
 
     return cmd_parser
-

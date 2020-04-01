@@ -14,7 +14,9 @@ class TestBatch(ut.TestCase):
         self.guest = load_molecule()
         self.sampler = OriginSampler()
         self.scoring = MinDistanceScore(threshold=1.5)
-        self.docker = BatchDocker(self.host, self.guest, self.sampler, scoring_fn=self.scoring)
+        self.docker = BatchDocker(
+            self.host, self.guest, self.sampler, scoring_fn=self.scoring
+        )
         self.subdocker = Subdocker(self.docker, 2)
 
     def test_dock(self):

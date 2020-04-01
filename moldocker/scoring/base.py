@@ -7,5 +7,3 @@ class Score:
 
     def __call__(self, input_):
         return 0
-        
-

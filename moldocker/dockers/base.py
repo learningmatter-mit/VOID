@@ -13,10 +13,7 @@ class Docker:
 
     def copy(self):
         return self.__class__(
-            self.host.copy(),
-            self.guest.copy(),
-            self.sampler,
-            self.scoring_fn
+            self.host.copy(), self.guest.copy(), self.sampler, self.scoring_fn
         )
 
     def new_host(self, newcoords=None):
@@ -34,10 +31,7 @@ class Docker:
         if newcoords is None:
             return self.guest.copy()
 
-        return Molecule(
-            species=self.guest.species,
-            coords=newcoords,
-        )
+        return Molecule(species=self.guest.species, coords=newcoords,)
 
     def dock(self, attempts):
         """Docks the guest into the host.
@@ -58,12 +52,6 @@ class Docker:
 
     def rank_complexes(self, complexes):
         scores = [self.get_score(cpx) for cpx in complexes]
-        ranking = sorted(
-            zip(complexes, scores),
-            key=lambda x: x[1],
-            reverse=True
-        )
+        ranking = sorted(zip(complexes, scores), key=lambda x: x[1], reverse=True)
 
         return [cpx for cpx, score in ranking if score >= 0]
-
-

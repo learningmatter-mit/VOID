@@ -11,16 +11,16 @@ class TestCif(ut.TestCase):
         self.structure = load_structure()
 
     def test_load(self):
-        path = os.path.join(inpath, 'AFI.cif')
+        path = os.path.join(inpath, "AFI.cif")
         loaded = cif.read_cif(path, primitive=False)
         self.assertEqual(self.structure, loaded)
 
     def test_write(self):
-        scratchdir = '.tmp_test'
+        scratchdir = ".tmp_test"
         if not os.path.exists(scratchdir):
             os.mkdir(scratchdir)
 
-        outpath = os.path.join(scratchdir, 'test.cif')
+        outpath = os.path.join(scratchdir, "test.cif")
 
         cif.write_cif(outpath, self.structure)
         loaded = cif.read_cif(outpath, primitive=False)

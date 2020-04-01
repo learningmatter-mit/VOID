@@ -17,10 +17,3 @@ if __name__ == "__main__":
     host, guest = load_structures(args)
 
     complexes = docker.dock(args.attempts)
-    to_subdock = complexes[:args.max_subdock]
-    while len(to_subdock) > 0:
-
-    
-
-
-

@@ -9,6 +9,7 @@ class Subdocker:
         inside a host. Tries to put as many guests
         as possible inside the host
     """
+
     def __init__(self, docker, max_subdock=MAX_SUBDOCK):
         self.docker = docker
         self.max_subdock = max_subdock
@@ -23,7 +24,7 @@ class Subdocker:
             complex_loading = {loading: complexes}
             higher_loading = []
 
-            for cpx in complexes[:self.max_subdock]:
+            for cpx in complexes[: self.max_subdock]:
                 subdocker = self.docker.copy()
                 subdocker.host = cpx.pose
                 higher_loading += subdocker.dock(attempts)
@@ -32,12 +33,3 @@ class Subdocker:
             loading += 1
 
         return complex_loading
-
-
-
-        
-
-
-
-
-    
