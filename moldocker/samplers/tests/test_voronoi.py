@@ -2,7 +2,7 @@ import numpy as np
 import unittest as ut
 
 from moldocker.samplers import VoronoiSampler, VoronoiClustering
-from ..test_inputs import load_structure, load_molecule
+from moldocker.tests.test_inputs import load_structure, load_molecule
 
 
 class TestVoronoi(ut.TestCase):

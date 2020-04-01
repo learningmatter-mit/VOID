@@ -3,7 +3,7 @@ import shutil
 import unittest as ut
 
 from moldocker.io import cif
-from ..test_inputs import load_structure, load_molecule, inpath
+from moldocker.tests.test_inputs import load_structure, load_molecule, inpath
 
 
 class TestCif(ut.TestCase):

@@ -1,11 +1,11 @@
 import numpy as np
 import unittest as ut
 
-from moldocker.dockers import BatchDocker, Subdocker
+from moldocker.dockers import BatchDocker
 from moldocker.samplers import OriginSampler
 from moldocker.scoring import MinDistanceScore
 
-from ..test_inputs import load_structure, load_molecule
+from moldocker.tests.test_inputs import load_structure, load_molecule
 
 
 class TestBatch(ut.TestCase):
@@ -17,18 +17,25 @@ class TestBatch(ut.TestCase):
         self.docker = BatchDocker(
             self.host, self.guest, self.sampler, scoring_fn=self.scoring
         )
-        self.subdocker = Subdocker(self.docker, 2)
+
+    def test_rotate(self):
+        coords = self.docker.rotate_guest(10)
+
+        self.assertEqual(coords.shape, (10, 47, 3))
+
+    def test_translate(self):
+        point = np.array([0, 0, 1])
+        coords = self.docker.translate_host(point, 10)
+        self.assertEqual(coords.shape, (10, 72, 3))
 
     def test_dock(self):
-        complexes = {}
-        while len(complexes) == 0:
-            complexes = self.subdocker.dock(10)
+        poses = []
+        while len(poses) == 0:
+            poses = self.docker.dock(10)
 
-        self.assertIsInstance(complexes, dict)
-        self.assertIsInstance(complexes[1], list)
-        self.assertTrue(len(complexes[1]) > 0)
+        self.assertIsInstance(poses, list)
 
-        pose = complexes[1][0].pose
+        pose = poses[0].pose
         self.assertEqual(len(pose), 119)
 
         self.assertTrue(pose.distance_matrix[:72, 72:].min() > 1.5)

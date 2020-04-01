@@ -4,7 +4,7 @@ import unittest as ut
 from moldocker.dockers import Docker
 from moldocker.samplers import OriginSampler
 
-from ..test_inputs import load_structure, load_molecule
+from moldocker.tests.test_inputs import load_structure, load_molecule
 
 
 @ut.skip("does not execute this class")
