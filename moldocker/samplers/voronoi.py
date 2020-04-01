@@ -10,6 +10,7 @@ from pymatgen.core.periodic_table import Specie
 from pymatgen.analysis.bond_valence import BVAnalyzer
 
 from .base import Sampler
+from moldocker.io.stdout import suppress_stdout
 
 
 PROBE_RADIUS = 0.1
@@ -39,9 +40,10 @@ class VoronoiSampler(Sampler):
         except (ValueError, TypeError) as e:
             radii = None
 
-        nodes, edge_center, face_center = zeopp.get_voronoi_nodes(
-            self._structure, radii, probe_rad=self.probe_radius
-        )
+        with suppress_stdout():
+            nodes, edge_center, face_center = zeopp.get_voronoi_nodes(
+                self._structure, radii, probe_rad=self.probe_radius
+            )
 
         return nodes, edge_center, face_center
 
