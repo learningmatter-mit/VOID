@@ -7,6 +7,7 @@ from moldocker.samplers import OriginSampler
 from ..test_inputs import load_structure, load_molecule
 
 
+@ut.skip("does not execute this class")
 class TestDocker(ut.TestCase):
     def setUp(self):
         self.host = load_structure()
