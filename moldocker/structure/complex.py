@@ -34,3 +34,18 @@ class Complex:
 
     def __len__(self):
         return len(self.host) + len(self.guest)
+
+    @property
+    def distance_matrix(self):
+        """Returns the distance matrix between
+            the host (rows) and the guest (columns).
+        """
+        return self.host.lattice.get_all_distances(
+            self.host.frac_coords,
+            self.to_frac_coords(self.guest.cart_coords)
+        )
+
+    def to_frac_coords(self, coords):
+        return self.host.lattice.get_fractional_coords(
+            coords.reshape(-1, 3)
+        ).reshape(coords.shape)

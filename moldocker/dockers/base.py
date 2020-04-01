@@ -1,76 +1,69 @@
 import numpy as np
-from moldocker.utils.structure import join_structures
+from pymatgen.core import Structure, Molecule
 
 
 class Docker:
     """Base class to dock a guest into a crystal"""
 
-    def __init__(self, host, guest, sampler, **kwargs):
+    def __init__(self, host, guest, sampler, scoring_fn, **kwargs):
         self.host = host
         self.guest = guest
         self.sampler = sampler
+        self.scoring_fn = scoring_fn
 
-    def rotate_guest(self, theta=None, axis=None):
-        guest = self.guest.copy()
+    def copy(self):
+        return self.__class__(
+            self.host.copy(),
+            self.guest.copy(),
+            self.sampler,
+            self.scoring_fn
+        )
 
-        if theta is None:
-            theta = 2 * np.pi * np.random.rand(1)[0]
+    def new_host(self, newcoords=None):
+        if newcoords is None:
+            return self.host.copy()
 
-        if axis is None:
-            axis = np.random.rand(3)
+        return Structure(
+            species=self.host.species,
+            coords=newcoords,
+            lattice=self.host.lattice.matrix,
+            coords_are_cartesian=True,
+        )
 
-        guest.rotate_sites(theta=theta, axis=axis)
+    def new_guest(self, newcoords=None):
+        if newcoords is None:
+            return self.guest.copy()
 
-        return guest
-
-    def translate_host(self, coords):
-        """Translates all nodes of the host to the given coords.
-
-        Args:
-            coords (np.array): (3, ) array with cartesian coordinates.
-        """
-
-        host = self.host.copy()
-        host.translate_sites(range(len(self.host)), -coords, frac_coords=False)
-
-        return host
+        return Molecule(
+            species=self.guest.species,
+            coords=newcoords,
+        )
 
     def dock(self, attempts):
         """Docks the guest into the host.
         """
-
-        poses = []
+        complexes = []
         for point in self.sampler.get_points(self.host):
-            poses += self.dock_to_point(point, attempts)
+            complexes += self.dock_at_point(point, attempts)
 
-        return poses
+        complexes = self.rank_complexes(complexes)
 
-    def dock_to_point(self, point, attempts):
-        subst = self.translate_host(point)
+        return complexes
 
-        poses = []
-        for _ in range(attempts):
-            mol = self.rotate_guest()
+    def dock_at_point(self, point, attempts):
+        raise NotImplementedError
 
-            try:
-                docked = join_structures(mol, subst, validate_proximity=True)
-                poses.append(docked)
+    def get_score(self, complex):
+        return self.scoring_fn(complex.distance_matrix)
 
-            except ValueError:
-                pass
+    def rank_complexes(self, complexes):
+        scores = [self.get_score(cpx) for cpx in complexes]
+        ranking = sorted(
+            zip(complexes, scores),
+            key=lambda x: x[1],
+            reverse=True
+        )
 
-        return poses
+        return [cpx for cpx, score in ranking if score >= 0]
 
-    def copy(self):
-        return self.__class__(self.host.copy(), self.guest.copy(), self.sampler)
 
-    def increase_loading(self, structures, attempts):
-        high_loading_structs = []
-        for struct in tqdm(
-            structures, "increasing the loading of the given structures"
-        ):
-            subdocker = self.copy(host=struct)
-            subdocked_structs = subdocker.dock(attempts)
-            high_loading_structs += subdocked_structs
-
-        return high_loading_structs
