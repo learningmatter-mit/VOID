@@ -1,3 +1,4 @@
+import numpy as np
 from moldocker import utils
 from pymatgen.core import Molecule, Structure
 
@@ -18,8 +19,19 @@ class Complex:
 
     @property
     def pose(self):
-        return utils.join_structures(self.guest, self.host)
+        species = self.host.species + self.guest.species
+        coords = np.concatenate([self.host.cart_coords, self.guest.cart_coords], axis=0)
+        props = {
+            "label": ["host"] * len(self.host) + ["guest"] * len(self.guest)
+        }
 
-    def get_guest_host_distance(self):
-        """get distance between atoms from the guest and host"""
-        return utils.get_molecule_structure_distances(self.pose, len(self.host))
+        return Structure(
+            species=species,
+            coords=coords,
+            coords_are_cartesian=True,
+            lattice=self.host.lattice.matrix,
+            site_properties=props
+        )
+
+    def __len__(self):
+        return len(self.host) + len(self.guest)

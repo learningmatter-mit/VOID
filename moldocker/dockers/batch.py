@@ -1,8 +1,9 @@
 import numpy as np
-from pymatgen.core import Structure
+from pymatgen.core import Structure, Molecule
 
 from .base import Docker
 from moldocker import utils
+from moldocker.structure import Complex
 from moldocker.geometry.rotation import random_rotation_matrices
 
 
@@ -32,30 +33,34 @@ class BatchDocker(Docker):
 
         dist_matrices = self.get_distance_matrices(host_batch, guest_batch)
 
-        poses = [
-            self._pose_from_coords(hcoords, gcoords)
+        complexes = [
+            self._complex_from_coords(hcoords, gcoords)
             for hcoords, gcoords, dm in zip(host_batch, guest_batch, dist_matrices)
             if self.scoring_fn(dm) > 0
         ]
 
-        return poses
+        return complexes
 
-    def _pose_from_coords(self, host_coords, guest_coords):
-        coords = np.concatenate([host_coords, guest_coords], axis=0)
-
-        labels = ["host"] * len(self.host) + ["guest"] * len(self.guest)
-
+    def _complex_from_coords(self, host_coords, guest_coords):
         # TODO: add previous properties if they already exist in
         # the host
-        props = {"label": labels}
 
-        return Structure(
-            species=(self.host.species + self.guest.species),
-            coords=coords,
+        new_host = Structure(
+            species=self.host.species,
+            coords=host_coords,
             lattice=self.host.lattice.matrix,
             coords_are_cartesian=True,
-            site_properties=props,
+            site_properties={"label": ["host"] * len(self.host)},
         )
+
+        new_guest = Molecule(
+            species=self.guest.species,
+            coords=guest_coords,
+            site_properties={"label": ["guest"] * len(self.guest)},
+        )
+
+        return Complex(new_host, new_guest)
+
 
     def get_distance_matrices(self, host_batch, guest_batch):
         frac_host = self.to_frac_coords(host_batch)

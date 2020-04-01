@@ -33,7 +33,7 @@ class TestBatch(ut.TestCase):
 
         self.assertIsInstance(poses, list)
 
-        pose = poses[0]
+        pose = poses[0].pose
         self.assertEqual(len(pose), 119)
 
         self.assertTrue(pose.distance_matrix[:72, 72:].min() > 1.5)
