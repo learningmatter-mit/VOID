@@ -3,6 +3,7 @@ import unittest as ut
 
 from moldocker.dockers import BatchDocker
 from moldocker.samplers import OriginSampler
+from moldocker.scoring import MinDistanceScore
 
 from ..test_inputs import load_structure, load_molecule
 
@@ -12,7 +13,8 @@ class TestBatch(ut.TestCase):
         self.host = load_structure()
         self.guest = load_molecule()
         self.sampler = OriginSampler()
-        self.docker = BatchDocker(self.host, self.guest, self.sampler)
+        self.scoring = MinDistanceScore(threshold=1.5)
+        self.docker = BatchDocker(self.host, self.guest, self.sampler, scoring_fn=self.scoring)
 
     def test_rotate(self):
         coords = self.docker.rotate_guest(10)

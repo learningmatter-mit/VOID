@@ -7,6 +7,10 @@ from moldocker.geometry.rotation import random_rotation_matrices
 
 
 class BatchDocker(Docker):
+    def __init__(self, *args, scoring_fn, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scoring_fn = scoring_fn
+
     def rotate_guest(self, attempts):
         # (N, num_atoms, 3) matrix
         coords = np.repeat(self.guest.cart_coords[None, ...], attempts, axis=0)
@@ -18,12 +22,6 @@ class BatchDocker(Docker):
         return np.matmul(coords, rotation.swapaxes(-1, -2))
 
     def translate_host(self, point, attempts):
-        """Translates all nodes of the host to the given coords.
-
-        Args:
-            coords (np.array): (3, ) array with cartesian coordinates.
-        """
-
         translated = self.host.cart_coords - point
 
         return np.repeat(translated[None, ...], attempts, axis=0)
@@ -37,7 +35,7 @@ class BatchDocker(Docker):
         poses = [
             self._pose_from_coords(hcoords, gcoords)
             for hcoords, gcoords, dm in zip(host_batch, guest_batch, dist_matrices)
-            if self.satisfy_distance_criteria(dm)
+            if self.scoring_fn(dm) > 0
         ]
 
         return poses
@@ -60,12 +58,8 @@ class BatchDocker(Docker):
         )
 
     def get_distance_matrices(self, host_batch, guest_batch):
-        frac_host = self.host.lattice.get_fractional_coords(
-            host_batch.reshape(-1, 3)
-        ).reshape(host_batch.shape)
-        frac_guest = self.host.lattice.get_fractional_coords(
-            guest_batch.reshape(-1, 3)
-        ).reshape(guest_batch.shape)
+        frac_host = self.to_frac_coords(host_batch)
+        frac_guest = self.to_frac_coords(guest_batch)
 
         distance_matrices = [
             self.host.lattice.get_all_distances(f1, f2)
@@ -74,5 +68,7 @@ class BatchDocker(Docker):
 
         return distance_matrices
 
-    def satisfy_distance_criteria(self, dmatrix):
-        return dmatrix.min() > 1.5
+    def to_frac_coords(self, coords):
+        return self.host.lattice.get_fractional_coords(
+            coords.reshape(-1, 3)
+        ).reshape(coords.shape)
