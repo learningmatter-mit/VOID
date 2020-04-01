@@ -21,9 +21,9 @@ class Complex:
     def pose(self):
         species = self.host.species + self.guest.species
         coords = np.concatenate([self.host.cart_coords, self.guest.cart_coords], axis=0)
-        props = {
-            "label": ["host"] * len(self.host) + ["guest"] * len(self.guest)
-        }
+        host_props = self.host.site_properties.get("label", ["host"] * len(self.host))
+        guest_props = self.guest.site_properties.get("label", ["guest"] * len(self.guest))
+        props = {"label": host_props + guest_props}
 
         return Structure(
             species=species,

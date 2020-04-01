@@ -42,25 +42,20 @@ class BatchDocker(Docker):
         return complexes
 
     def _complex_from_coords(self, host_coords, guest_coords):
-        # TODO: add previous properties if they already exist in
-        # the host
-
+        
         new_host = Structure(
             species=self.host.species,
             coords=host_coords,
             lattice=self.host.lattice.matrix,
             coords_are_cartesian=True,
-            site_properties={"label": ["host"] * len(self.host)},
         )
 
         new_guest = Molecule(
             species=self.guest.species,
             coords=guest_coords,
-            site_properties={"label": ["guest"] * len(self.guest)},
         )
 
         return Complex(new_host, new_guest)
-
 
     def get_distance_matrices(self, host_batch, guest_batch):
         frac_host = self.to_frac_coords(host_batch)
