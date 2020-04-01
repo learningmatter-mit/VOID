@@ -2,9 +2,8 @@ import numpy as np
 from pymatgen.core import Structure, Molecule
 
 from .base import Docker
-from moldocker import utils
 from moldocker.structure import Complex
-from moldocker.geometry.rotation import random_rotation_matrices
+from moldocker.utils.geometry import random_rotation_matrices
 
 
 class BatchDocker(Docker):

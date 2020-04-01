@@ -1,5 +1,5 @@
 import numpy as np
-from moldocker import utils
+from moldocker.utils.structure import join_structures
 
 
 class Docker:
@@ -53,7 +53,7 @@ class Docker:
             mol = self.rotate_guest()
 
             try:
-                docked = utils.join_structures(mol, subst, validate_proximity=True)
+                docked = join_structures(mol, subst, validate_proximity=True)
                 poses.append(docked)
 
             except ValueError:

@@ -1,5 +1,4 @@
 import numpy as np
-from moldocker import utils
 from pymatgen.core import Molecule, Structure
 
 

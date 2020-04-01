@@ -1,5 +1,5 @@
 import numpy as np
-from pymatgen.core.structure import Structure, Molecule, PeriodicSite
+from pymatgen.core.structure import Structure, Molecule
 
 
 def join_structures(src, dst, validate_proximity=False):

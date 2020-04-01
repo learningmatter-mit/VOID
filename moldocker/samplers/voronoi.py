@@ -9,9 +9,6 @@ import pymatgen.io.zeopp as zeopp
 from pymatgen.core.periodic_table import Specie
 from pymatgen.analysis.bond_valence import BVAnalyzer
 
-from moldocker import utils
-
-
 from .base import Sampler
 
 
