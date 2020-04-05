@@ -24,7 +24,7 @@ class Subdocker:
             complex_loading = {loading: complexes}
             higher_loading = []
 
-            for cpx in complexes[:self.max_subdock]:
+            for cpx in complexes[: self.max_subdock]:
                 subdocker = self.docker.copy()
                 subdocker.host = cpx.pose
                 higher_loading += subdocker.dock(attempts)
