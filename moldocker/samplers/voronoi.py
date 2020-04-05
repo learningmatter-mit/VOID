@@ -105,7 +105,7 @@ class VoronoiClustering(VoronoiSampler):
 
         def cluster_points(X):
             num_clusters = min(len(X), self.num_clusters)
-            kmeans = KMeans(num_clusters=num_clusters)
+            kmeans = KMeans(n_clusters=num_clusters)
             kmeans.fit(X)
             return kmeans.labels_
 
