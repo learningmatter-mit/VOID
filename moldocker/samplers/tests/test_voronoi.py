@@ -41,7 +41,7 @@ class TestVoronoiClustering(ut.TestCase):
         self.host = load_structure()
         self.guest = load_molecule()
         self.N = 4
-        self.sampler = VoronoiClustering(n_clusters=self.N)
+        self.sampler = VoronoiClustering(num_clusters=self.N)
 
     def test_points(self):
         points = self.sampler.get_points(self.host)
