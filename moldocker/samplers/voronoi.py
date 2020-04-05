@@ -96,16 +96,16 @@ class VoronoiClustering(VoronoiSampler):
         further away from the zeolite (largest voronoi radius).
     """
 
-    def __init__(self, *args, n_clusters, **kwargs):
+    def __init__(self, *args, num_clusters, **kwargs):
         super().__init__(*args, **kwargs)
-        self.n_clusters = n_clusters
+        self.num_clusters = num_clusters
 
     def get_points(self, structure):
         nodes = self.get_voronoi_nodes(structure)
 
         def cluster_points(X):
-            n_clusters = min(len(X), self.n_clusters)
-            kmeans = KMeans(n_clusters=n_clusters)
+            num_clusters = min(len(X), self.num_clusters)
+            kmeans = KMeans(num_clusters=num_clusters)
             kmeans.fit(X)
             return kmeans.labels_
 
@@ -115,7 +115,7 @@ class VoronoiClustering(VoronoiSampler):
                 attempts during docking.
             """
             best_sites = []
-            for i in range(self.n_clusters):
+            for i in range(self.num_clusters):
                 sites_cluster = [
                     site for site, cluster in zip(sites, labels) if cluster == i
                 ]
