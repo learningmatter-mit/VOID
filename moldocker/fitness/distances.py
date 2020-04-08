@@ -7,7 +7,7 @@ THRESHOLD = 1.5
 
 
 class ThresholdFitness(Fitness):
-    def __init__(self, threshold):
+    def __init__(self, threshold=THRESHOLD, **kwargs):
         """Fitness is positive if the minimum distance is above
             the given threshold
         """

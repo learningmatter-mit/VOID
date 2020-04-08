@@ -15,6 +15,7 @@ class TestParser(ut.TestCase):
             '--docker', 'batch',
             '--sampler', 'voronoi_cluster',
             '--fitness', 'min_distance',
+            '--subdock'
         ]
 
         parsed = self.parser.parse_args(args)

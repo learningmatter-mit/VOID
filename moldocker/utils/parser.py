@@ -69,17 +69,31 @@ class Parser:
             default='docked'
         )
 
+        self.parser.add_argument(
+            "--subdock",
+            help="If set, allow subdocking of molecules inside the structure (default: %(default)s)",
+            default=False,
+            action='store_true'
+        )
+
     def parse_args(self, args=None):
         options, _ = self.parser.parse_known_args(args)
+        parent_parsers = [
+            self.parser,
+            self.docker_opts[options.docker],
+            self.sampler_opts[options.sampler],
+            self.fitness_opts[options.fitness]
+        ]
+
+        if options.subdock:
+            parent_parsers.append(
+                self.docker_opts['subdock'],
+            )
+
         newparser = argparse.ArgumentParser(
             description=self.DESCRIPTION,
-            parents=[
-                self.parser,
-                self.docker_opts[options.docker],
-                self.sampler_opts[options.sampler],
-                self.fitness_opts[options.fitness]
-            ],
-            add_help=True
+            add_help=True,
+            parents=parent_parsers
         )
         return newparser.parse_args(args)
 
