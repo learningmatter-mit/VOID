@@ -6,8 +6,6 @@ import unittest as ut
 thisdir = os.path.dirname(os.path.abspath(__file__))
 inpath = os.path.join(thisdir, "files")
 
-print(inpath)
-
 
 def load_structure(filename="AFI.cif"):
     path = os.path.join(inpath, filename)
