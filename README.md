@@ -14,7 +14,7 @@ This software requires the following packages:
 
 ```bash
 conda upgrade conda
-conda create -n moldocker python=3.7 pymatgen>=2020.3.2 scikit-learn -c conda-forge
+conda create -n moldocker python=3.7 numpy pymatgen>=2020.3.2 scikit-learn -c conda-forge
 ```
 
 You need to activate the `moldocker` environment to install the `moldocker` package:
@@ -43,6 +43,8 @@ dock.py moldocker/tests/files/{AFI.cif,molecule.xyz} -o ~/Desktop/dock -d batch 
 ```
 
 This will dock the molecule contained in `molecule.xyz` to the zeolite in `AFI.cif` using the batch docker, Voronoi sampler with predefined number of clusters and a fitness function that considers the minimum distance between the host and the guest. All output files are saved in the folder `~/Desktop/dock`.
+
+For more information on the dockers, samplers and fitness functions available, run `dock.py --help`. Help on further commands are available once the choice of dockers, samplers and fitness functions are made, e.g. `dock.py -d batch -s voronoi_cluster -f min_distance --help`.
 
 ## Nomenclature
 
