@@ -12,8 +12,8 @@ class Subdocker(ParseableObject):
         as possible inside the host
     """
 
-    PARSER_NAME = 'subdock'
-    HELP = 'Docks recursively until the host is completely filled with guests'
+    PARSER_NAME = "subdock"
+    HELP = "Docks recursively until the host is completely filled with guests"
 
     def __init__(self, docker, max_subdock=MAX_SUBDOCK):
         self.docker = docker
@@ -24,7 +24,7 @@ class Subdocker(ParseableObject):
             "--max_subdock",
             type=int,
             help="maximum number of complexes to attempt subdocking (default: %(default)s)",
-            default=MAX_SUBDOCK
+            default=MAX_SUBDOCK,
         )
 
     def dock(self, attempts):

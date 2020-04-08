@@ -20,9 +20,9 @@ NUM_CLUSTERS = 10
 
 
 class VoronoiSampler(Sampler):
-    PARSER_NAME = 'voronoi'
-    HELP = 'Samples the structure based on the voronoi \
-            diagram of the void space'
+    PARSER_NAME = "voronoi"
+    HELP = "Samples the structure based on the voronoi \
+            diagram of the void space"
 
     def __init__(
         self,
@@ -40,20 +40,20 @@ class VoronoiSampler(Sampler):
             "--probe_radius",
             type=float,
             help="radius of the probe to be used in voronoi diagrams (default: %(default)s)",
-            default=PROBE_RADIUS
+            default=PROBE_RADIUS,
         )
         parser.add_argument(
             "--remove_species",
             type=str,
-            nargs='+',
+            nargs="+",
             help="species to remove from the structure when computing voronoi diagrams (default: %(default)s)",
-            default=REMOVE_SPECIES
+            default=REMOVE_SPECIES,
         )
         parser.add_argument(
             "--min_radius",
             type=float,
             help="minimum radius of a voronoi point for it to be considered during sampling (default: %(default)s)",
-            default=MIN_VORONOI_RADIUS
+            default=MIN_VORONOI_RADIUS,
         )
 
     def remove_species_from_structure(self):
@@ -121,11 +121,12 @@ class VoronoiClustering(VoronoiSampler):
         calculating the distances. The best sites are those
         further away from the zeolite (largest voronoi radius).
     """
-    PARSER_NAME = 'voronoi_cluster'
-    HELP = 'Samples the structure based on the voronoi \
+
+    PARSER_NAME = "voronoi_cluster"
+    HELP = "Samples the structure based on the voronoi \
             diagram of the void space plus clustering of \
             the voronoi nodes to lower the number of points \
-            being searched'
+            being searched"
 
     def __init__(self, *args, num_clusters=NUM_CLUSTERS, **kwargs):
         super().__init__(*args, **kwargs)
@@ -137,7 +138,7 @@ class VoronoiClustering(VoronoiSampler):
             "--num_clusters",
             type=int,
             help="number of clusters to consider when sampling the structure with voronoi points (default: %(default)s)",
-            default=NUM_CLUSTERS
+            default=NUM_CLUSTERS,
         )
 
     def get_points(self, structure):

@@ -12,12 +12,11 @@ class Sampler(ParseableObject):
 
 
 class OriginSampler(Sampler):
-    PARSER_NAME = 'origin'
-    HELP = 'Samples the origin of the structure'
+    PARSER_NAME = "origin"
+    HELP = "Samples the origin of the structure"
 
     def __init__(self):
         super().__init__()
 
     def get_points(self, structure):
         return [np.array([0, 0, 0])]
-

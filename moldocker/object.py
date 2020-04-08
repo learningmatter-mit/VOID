@@ -1,6 +1,6 @@
 class ParseableObject:
-    PARSER_NAME = 'parse'
-    HELP = 'Default parseable object'
+    PARSER_NAME = "parse"
+    HELP = "Default parseable object"
 
     def __init__(self):
         pass
@@ -11,4 +11,3 @@ class ParseableObject:
 
     def add_arguments(self, parser):
         pass
-
