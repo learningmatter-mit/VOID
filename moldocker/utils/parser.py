@@ -9,8 +9,7 @@ class Parser:
 
     def __init__(self, *args, **kwargs):
         self.parser = argparse.ArgumentParser(
-            description=self.DESCRIPTION,
-            add_help=False
+            description=self.DESCRIPTION, add_help=False
         )
 
         self.add_main_kwargs()
@@ -19,38 +18,38 @@ class Parser:
         self.fitness_opts = self.get_fitness_parsers()
 
     def get_module_parsers(self, module):
-        return {
-            cls.PARSER_NAME: cls.get_parser()
-            for cls in module.__all__
-        }
+        return {cls.PARSER_NAME: cls.get_parser() for cls in module.__all__}
 
     def get_dockers_parsers(self):
         parsers = self.get_module_parsers(dockers)
         self.parser.add_argument(
-            "-d", "--docker",
+            "-d",
+            "--docker",
             type=str,
             help="Docker to be used",
-            choices=list(parsers.keys())
+            choices=list(parsers.keys()),
         )
         return parsers
 
     def get_samplers_parsers(self):
         parsers = self.get_module_parsers(samplers)
         self.parser.add_argument(
-            "-s", "--sampler",
+            "-s",
+            "--sampler",
             type=str,
             help="Sampler to be used",
-            choices=list(parsers.keys())
+            choices=list(parsers.keys()),
         )
         return parsers
 
     def get_fitness_parsers(self):
         parsers = self.get_module_parsers(fitness)
         self.parser.add_argument(
-            "-f", "--fitness",
+            "-f",
+            "--fitness",
             type=str,
             help="fitness function to be used",
-            choices=list(parsers.keys())
+            choices=list(parsers.keys()),
         )
         return parsers
 
@@ -63,17 +62,18 @@ class Parser:
         )
 
         self.parser.add_argument(
-            "-o", "--output",
+            "-o",
+            "--output",
             type=str,
             help="Paths to output complexes (default: %(default)s)",
-            default='docked'
+            default="docked",
         )
 
         self.parser.add_argument(
             "--subdock",
             help="If set, allow subdocking of molecules inside the structure (default: %(default)s)",
             default=False,
-            action='store_true'
+            action="store_true",
         )
 
     def parse_args(self, args=None):
@@ -82,18 +82,13 @@ class Parser:
             self.parser,
             self.docker_opts[options.docker],
             self.sampler_opts[options.sampler],
-            self.fitness_opts[options.fitness]
+            self.fitness_opts[options.fitness],
         ]
 
         if options.subdock:
-            parent_parsers.append(
-                self.docker_opts['subdock'],
-            )
+            parent_parsers.append(self.docker_opts["subdock"],)
 
         newparser = argparse.ArgumentParser(
-            description=self.DESCRIPTION,
-            add_help=True,
-            parents=parent_parsers
+            description=self.DESCRIPTION, add_help=True, parents=parent_parsers
         )
         return newparser.parse_args(args)
-

@@ -10,18 +10,21 @@ class TestParser(ut.TestCase):
 
     def test_parse(self):
         args = [
-            '../../tests/files/AFI.cif',
-            '../../tests/files/molecule.xyz',
-            '--docker', 'batch',
-            '--sampler', 'voronoi_cluster',
-            '--fitness', 'min_distance',
-            '--subdock'
+            "../../tests/files/AFI.cif",
+            "../../tests/files/molecule.xyz",
+            "--docker",
+            "batch",
+            "--sampler",
+            "voronoi_cluster",
+            "--fitness",
+            "min_distance",
+            "--subdock",
         ]
 
         parsed = self.parser.parse_args(args)
-        self.assertEqual(parsed.docker, 'batch')
-        self.assertEqual(parsed.sampler, 'voronoi_cluster')
-        self.assertEqual(parsed.fitness, 'min_distance')
+        self.assertEqual(parsed.docker, "batch")
+        self.assertEqual(parsed.sampler, "voronoi_cluster")
+        self.assertEqual(parsed.fitness, "min_distance")
 
 
 if __name__ == "__main__":

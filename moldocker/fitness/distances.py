@@ -20,7 +20,7 @@ class ThresholdFitness(Fitness):
             "--threshold",
             type=float,
             help="threshold for distance calculations (default: %(default)s)",
-            default=THRESHOLD
+            default=THRESHOLD,
         )
 
 

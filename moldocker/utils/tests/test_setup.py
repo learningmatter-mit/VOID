@@ -9,19 +9,22 @@ from moldocker.tests.test_inputs import load_structure, load_molecule
 
 thisdir = os.path.dirname(os.path.abspath(__file__))
 
+
 class TestSetup(ut.TestCase):
     def setUp(self):
-        host_file = os.path.join(thisdir, '../../tests/files/AFI.cif')
-        guest_file = os.path.join(thisdir, '../../tests/files/molecule.xyz')
+        host_file = os.path.join(thisdir, "../../tests/files/AFI.cif")
+        guest_file = os.path.join(thisdir, "../../tests/files/molecule.xyz")
 
-        args = Namespace(**dict(
-            input=[host_file, guest_file],
-            docker='batch',
-            sampler='voronoi_cluster',
-            fitness='min_distance',
-            subdock=True,
-            max_subdock=1
-        ))
+        args = Namespace(
+            **dict(
+                input=[host_file, guest_file],
+                docker="batch",
+                sampler="voronoi_cluster",
+                fitness="min_distance",
+                subdock=True,
+                max_subdock=1,
+            )
+        )
 
         self.setup = SetupRun(args)
 
@@ -43,7 +46,7 @@ class TestSetup(ut.TestCase):
     def test_docker(self):
         docker = self.setup.get_docker()
         self.assertIsInstance(docker, dockers.BatchDocker)
-    
+
     def test_subdocker(self):
         subdocker = self.setup.get_subdocker()
         self.assertIsInstance(subdocker, dockers.Subdocker)
