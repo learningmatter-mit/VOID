@@ -1,7 +1,7 @@
 from moldocker.object import ParseableObject
 
 
-class Score(ParseableObject):
+class Fitness(ParseableObject):
     def __init__(self, *args, **kwargs):
         pass
 

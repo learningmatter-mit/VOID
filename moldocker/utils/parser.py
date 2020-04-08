@@ -1,5 +1,5 @@
 import argparse
-from moldocker import dockers, samplers, scoring
+from moldocker import dockers, samplers, fitness
 
 
 class Parser:
@@ -16,7 +16,7 @@ class Parser:
         self.add_main_kwargs()
         self.docker_opts = self.get_dockers_parsers()
         self.sampler_opts = self.get_samplers_parsers()
-        self.scoring_opts = self.get_scoring_parsers()
+        self.fitness_opts = self.get_fitness_parsers()
 
     def get_module_parsers(self, module):
         return {
@@ -44,12 +44,12 @@ class Parser:
         )
         return parsers
 
-    def get_scoring_parsers(self):
-        parsers = self.get_module_parsers(scoring)
+    def get_fitness_parsers(self):
+        parsers = self.get_module_parsers(fitness)
         self.parser.add_argument(
-            "-f", "--scoring",
+            "-f", "--fitness",
             type=str,
-            help="Scoring function to be used",
+            help="fitness function to be used",
             choices=list(parsers.keys())
         )
         return parsers
@@ -77,7 +77,7 @@ class Parser:
                 self.parser,
                 self.docker_opts[options.docker],
                 self.sampler_opts[options.sampler],
-                self.scoring_opts[options.scoring]
+                self.fitness_opts[options.fitness]
             ],
             add_help=True
         )

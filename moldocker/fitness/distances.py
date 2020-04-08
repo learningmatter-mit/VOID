@@ -1,14 +1,14 @@
 import numpy as np
 
-from .base import Score
+from .base import Fitness
 
 
 THRESHOLD = 1.5
 
 
-class ThresholdScore(Score):
+class ThresholdFitness(Fitness):
     def __init__(self, threshold):
-        """Score is positive if the minimum distance is above
+        """Fitness is positive if the minimum distance is above
             the given threshold
         """
         super().__init__()
@@ -24,7 +24,7 @@ class ThresholdScore(Score):
         )
 
 
-class MinDistanceScore(ThresholdScore):
+class MinDistanceFitness(ThresholdFitness):
     PARSER_NAME = "min_distance"
     HELP = "Complexes have positive score if the minimum distance between host and guest is above the given threshold"
 
@@ -32,7 +32,7 @@ class MinDistanceScore(ThresholdScore):
         return distance_matrix.min() - self.threshold
 
 
-class MeanDistanceScore(ThresholdScore):
+class MeanDistanceFitness(ThresholdFitness):
     PARSER_NAME = "mean_distance"
     HELP = "Complexes have positive score if the mean distance between host and guest is above the given threshold"
 

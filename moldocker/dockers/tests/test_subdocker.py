@@ -3,7 +3,7 @@ import unittest as ut
 
 from moldocker.dockers import BatchDocker, Subdocker
 from moldocker.samplers import OriginSampler
-from moldocker.scoring import MinDistanceScore
+from moldocker.fitness import MinDistanceFitness
 
 from moldocker.tests.test_inputs import load_structure, load_molecule
 
@@ -13,9 +13,9 @@ class TestBatch(ut.TestCase):
         self.host = load_structure()
         self.guest = load_molecule()
         self.sampler = OriginSampler()
-        self.scoring = MinDistanceScore(threshold=1.5)
+        self.fitness = MinDistanceFitness(threshold=1.5)
         self.docker = BatchDocker(
-            self.host, self.guest, self.sampler, scoring_fn=self.scoring
+            self.host, self.guest, self.sampler, fitness_fn=self.fitness
         )
         self.subdocker = Subdocker(self.docker, 2)
 

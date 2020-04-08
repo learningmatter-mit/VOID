@@ -14,13 +14,13 @@ class TestParser(ut.TestCase):
             '../../tests/files/molecule.xyz',
             '--docker', 'batch',
             '--sampler', 'voronoi_cluster',
-            '--scoring', 'min_distance',
+            '--fitness', 'min_distance',
         ]
 
         parsed = self.parser.parse_args(args)
         self.assertEqual(parsed.docker, 'batch')
         self.assertEqual(parsed.sampler, 'voronoi_cluster')
-        self.assertEqual(parsed.scoring, 'min_distance')
+        self.assertEqual(parsed.fitness, 'min_distance')
 
 
 if __name__ == "__main__":
