@@ -1,4 +1,5 @@
 import os
+import json
 from pymatgen.core import Structure, Molecule
 from moldocker import dockers, samplers, fitness
 
@@ -52,4 +53,9 @@ class SetupRun:
     def make_output(self):
         if not os.path.exists(self.args['output']):
             os.mkdir(self.args['output'])
+
+    def save_args(self):
+        path = os.path.join(self.args['output'], 'args.json')
+        with open(path, 'w') as f:
+            json.dump(self.args, f, indent=4)
 

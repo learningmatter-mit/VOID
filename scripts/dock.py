@@ -25,3 +25,6 @@ if __name__ == "__main__":
     for idx, cpx in enumerate(complexes):
         outpath = os.path.join(args.output, '%04d.cif' % idx)
         write_cif(outpath, cpx.pose)
+
+    setup.save_args()
+
