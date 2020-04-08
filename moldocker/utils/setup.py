@@ -49,3 +49,7 @@ class SetupRun:
 
         return host, guest
 
+    def make_output(self):
+        if not os.path.exists(self.args['output']):
+            os.mkdir(self.args['output'])
+

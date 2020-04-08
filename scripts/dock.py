@@ -1,19 +1,27 @@
 #!/usr/bin/env python
-import logging
 import os
-from argparse import Namespace
+import logging
+
+from moldocker.utils.parser import Parser
+from moldocker.utils.setup import SetupRun
+from moldocker.io.cif import write_cif
 
 
 if __name__ == "__main__":
     # parse arguments
-    parser = parsers.get_main_parser()
-    parsers.add_subparsers(parser)
-    args = Namespace(**parser.parse_args())
+    parser = Parser()
+    args = parser.parse_args()
 
-    # create docker, sampler and scoring
-    docker, sampler, scoring = setup_run(args)
+    setup = SetupRun(args)
+    setup.make_output()
 
-    # load host/guest
-    host, guest = load_structures(args)
+    if args.subdock:
+        docker = setup.get_subdocker()
+    else:
+        docker = setup.get_docker()
 
     complexes = docker.dock(args.attempts)
+
+    for idx, cpx in enumerate(complexes):
+        outpath = os.path.join(args.output, '%04d.cif' % idx)
+        write_cif(outpath, cpx.pose)

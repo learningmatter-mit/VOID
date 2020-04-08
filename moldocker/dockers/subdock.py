@@ -46,4 +46,7 @@ class Subdocker(ParseableObject):
             complexes = self.docker.rank_complexes(higher_loading)
             loading += 1
 
-        return complex_loading
+        # TODO: make loading compatible with other dockers
+        # right now, dock returns a list of complexes
+        complexes = [subitem for item in complex_loading.values() for subitem in item]
+        return complexes
