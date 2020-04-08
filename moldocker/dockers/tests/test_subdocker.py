@@ -1,6 +1,7 @@
 import numpy as np
 import unittest as ut
 
+from moldocker.structure import Complex
 from moldocker.dockers import BatchDocker, Subdocker
 from moldocker.samplers import OriginSampler
 from moldocker.fitness import MinDistanceFitness
@@ -8,7 +9,7 @@ from moldocker.fitness import MinDistanceFitness
 from moldocker.tests.test_inputs import load_structure, load_molecule
 
 
-class TestBatch(ut.TestCase):
+class TestSubdocker(ut.TestCase):
     def setUp(self):
         self.host = load_structure()
         self.guest = load_molecule()
@@ -24,11 +25,10 @@ class TestBatch(ut.TestCase):
         while len(complexes) == 0:
             complexes = self.subdocker.dock(10)
 
-        self.assertIsInstance(complexes, dict)
-        self.assertIsInstance(complexes[1], list)
-        self.assertTrue(len(complexes[1]) > 0)
+        self.assertIsInstance(complexes, list)
+        self.assertIsInstance(complexes[0], Complex)
 
-        pose = complexes[1][0].pose
+        pose = complexes[0].pose
         self.assertEqual(len(pose), 119)
 
         self.assertTrue(pose.distance_matrix[:72, 72:].min() > 1.5)
