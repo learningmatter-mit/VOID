@@ -4,14 +4,29 @@ from pymatgen.core import Structure, Molecule
 from moldocker.object import ParseableObject
 
 
+ATTEMPTS = 50
+
+
 class Docker(ParseableObject):
     """Base class to dock a guest into a crystal"""
+
+    PARSER_NAME = "base"
+    HELP = "Base docker; does not implement any docking procedure"
 
     def __init__(self, host, guest, sampler, scoring_fn, **kwargs):
         self.host = host
         self.guest = guest
         self.sampler = sampler
         self.scoring_fn = scoring_fn
+
+    @staticmethod
+    def add_arguments(parser):
+        parser.add_argument(
+            "--attempts",
+            type=int,
+            help="maximum number of attempts to dock (default: %(default)s)",
+            default=ATTEMPTS,
+        )
 
     def copy(self):
         return self.__class__(

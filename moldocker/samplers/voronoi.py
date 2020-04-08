@@ -35,7 +35,8 @@ class VoronoiSampler(Sampler):
         self.remove_species = remove_species
         self.min_radius = min_radius
 
-    def add_arguments(self, parser):
+    @staticmethod
+    def add_arguments(parser):
         parser.add_argument(
             "--probe_radius",
             type=float,
@@ -132,8 +133,9 @@ class VoronoiClustering(VoronoiSampler):
         super().__init__(*args, **kwargs)
         self.num_clusters = num_clusters
 
-    def add_arguments(self, parser):
-        super().add_arguments(parser)
+    @staticmethod
+    def add_arguments(parser):
+        super(VoronoiClustering, VoronoiClustering).add_arguments(parser)
         parser.add_argument(
             "--num_clusters",
             type=int,

@@ -3,6 +3,9 @@ import numpy as np
 from .base import Score
 
 
+THRESHOLD = 1.5
+
+
 class ThresholdScore(Score):
     def __init__(self, threshold):
         """Score is positive if the minimum distance is above
@@ -11,12 +14,13 @@ class ThresholdScore(Score):
         super().__init__()
         self.threshold = threshold
 
-    def add_arguments(self, parser):
+    @staticmethod
+    def add_arguments(parser):
         parser.add_argument(
             "--threshold",
             type=float,
-            help="threshold for distance calculations",
-            required=True,
+            help="threshold for distance calculations (default: %(default)s)",
+            default=THRESHOLD
         )
 
 

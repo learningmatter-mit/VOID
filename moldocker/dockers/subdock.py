@@ -19,7 +19,8 @@ class Subdocker(ParseableObject):
         self.docker = docker
         self.max_subdock = max_subdock
 
-    def add_arguments(self, parser):
+    @staticmethod
+    def add_arguments(parser):
         parser.add_argument(
             "--max_subdock",
             type=int,
