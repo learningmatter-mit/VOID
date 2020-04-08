@@ -1,7 +1,7 @@
-import numpy as np
+from moldocker.object import ParseableObject
 
 
-class Score:
+class Score(ParseableObject):
     def __init__(self, *args, **kwargs):
         pass
 

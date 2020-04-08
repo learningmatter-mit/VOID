@@ -6,6 +6,9 @@ from moldocker.utils.geometry import random_rotation_matrices
 
 
 class BatchDocker(Docker):
+    PARSER_NAME = 'batch'
+    HELP = 'Docks guests to host by using batched (tensorial) operations'
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

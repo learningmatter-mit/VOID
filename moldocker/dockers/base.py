@@ -1,8 +1,10 @@
 import numpy as np
 from pymatgen.core import Structure, Molecule
 
+from moldocker.object import ParseableObject
 
-class Docker:
+
+class Docker(ParseableObject):
     """Base class to dock a guest into a crystal"""
 
     def __init__(self, host, guest, sampler, scoring_fn, **kwargs):

@@ -16,9 +16,14 @@ from moldocker.io.stdout import suppress_stdout
 PROBE_RADIUS = 0.1
 MIN_VORONOI_RADIUS = 3.0
 REMOVE_SPECIES = ["O"]
+NUM_CLUSTERS = 10
 
 
 class VoronoiSampler(Sampler):
+    PARSER_NAME = 'voronoi'
+    HELP = 'Samples the structure based on the voronoi \
+            diagram of the void space'
+
     def __init__(
         self,
         probe_radius=PROBE_RADIUS,
@@ -29,6 +34,27 @@ class VoronoiSampler(Sampler):
         self.probe_radius = probe_radius
         self.remove_species = remove_species
         self.min_radius = min_radius
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--probe_radius",
+            type=float,
+            help="radius of the probe to be used in voronoi diagrams (default: %(default)s)",
+            default=PROBE_RADIUS
+        )
+        parser.add_argument(
+            "--remove_species",
+            type=str,
+            nargs='+',
+            help="species to remove from the structure when computing voronoi diagrams (default: %(default)s)",
+            default=REMOVE_SPECIES
+        )
+        parser.add_argument(
+            "--min_radius",
+            type=float,
+            help="minimum radius of a voronoi point for it to be considered during sampling (default: %(default)s)",
+            default=MIN_VORONOI_RADIUS
+        )
 
     def remove_species_from_structure(self):
         for species in self.remove_species:
@@ -95,10 +121,24 @@ class VoronoiClustering(VoronoiSampler):
         calculating the distances. The best sites are those
         further away from the zeolite (largest voronoi radius).
     """
+    PARSER_NAME = 'voronoi_cluster'
+    HELP = 'Samples the structure based on the voronoi \
+            diagram of the void space plus clustering of \
+            the voronoi nodes to lower the number of points \
+            being searched'
 
-    def __init__(self, *args, num_clusters, **kwargs):
+    def __init__(self, *args, num_clusters=NUM_CLUSTERS, **kwargs):
         super().__init__(*args, **kwargs)
         self.num_clusters = num_clusters
+
+    def add_arguments(self, parser):
+        super().add_arguments(parser)
+        parser.add_argument(
+            "--num_clusters",
+            type=int,
+            help="number of clusters to consider when sampling the structure with voronoi points (default: %(default)s)",
+            default=NUM_CLUSTERS
+        )
 
     def get_points(self, structure):
         nodes = self.get_voronoi_nodes(structure)
