@@ -12,7 +12,6 @@ class MonteCarlo(ParseableObject):
     def __init__(self, metric, num_steps,  **kwargs):
         self.metric = metric
         self.num_steps = num_steps
-        self.actions = self.make_actions()
 
     @staticmethod
     def add_arguments(parser):
@@ -40,13 +39,13 @@ class MonteCarlo(ParseableObject):
 
         for step in range(self.num_steps):
             self.on_trial_start(step)
-            obj = self.run_trial(obj)
+            obj = self.trial(obj)
             self.on_trial_end(step)
 
         self.on_end(obj)
         return obj
 
-    def run_trial(self, obj):
+    def trial(self, obj):
         return obj
 
 
@@ -56,6 +55,7 @@ class MarkovChainMC(MonteCarlo):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.action = self.make_actions()
 
     def make_actions(self):
         actions = {}
@@ -66,7 +66,7 @@ class MarkovChainMC(MonteCarlo):
         mkaction.all = actions
         return mkaction
 
-    def run_trial(self, obj):
+    def trial(self, obj):
         action = self.sample_action()
         newobj = action(obj)
 
@@ -76,7 +76,7 @@ class MarkovChainMC(MonteCarlo):
         return obj
 
     def sample_action(self):
-        return random.sample(self.actions.all, 1)
+        return random.sample(self.action.all, 1)
 
     def accept(self, new, old):
         return np.random.uniform() >= 0.5
