@@ -21,6 +21,9 @@ class Complex:
     def __len__(self):
         return len(self.host) + len(self.guest)
 
+    def copy(self):
+        return Complex(self.host.copy(), self.guest.copy())
+
     @property
     def pose(self):
         species = self.host.species + self.guest.species
@@ -64,12 +67,12 @@ class Complex:
             theta = 2 * np.pi * np.random.uniform()
 
         self.guest.rotate_sites(axis=axis, theta=theta, anchor=anchor)
-        return self.guest
+        return self
 
     def translate_guest(self, vector=None):
         if vector is None:
             vector = np.random.randn(3)
 
         self.guest.translate_sites(vector=vector)
-        return self.guest
+        return self
 
