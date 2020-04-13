@@ -17,14 +17,13 @@ class TestMonteCarlo(ut.TestCase):
     def setUp(self):
         self.fitness = MinDistanceFitness(threshold=1.5)
         self.num_steps = 10
-        self.mcarlo = ExampleMC(self.fitness, self.num_steps)
+        self.mcarlo = ExampleMC(self.fitness)
 
     def test_examplemc(self):
         initial = 0
-        final = self.mcarlo.run(initial)
+        final = self.mcarlo.run(initial, self.num_steps)
 
         self.assertEqual(final, initial + self.num_steps)
-
 
 
 if __name__ == "__main__":

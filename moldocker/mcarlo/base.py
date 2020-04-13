@@ -12,9 +12,8 @@ class MonteCarlo(ParseableObject):
     PARSER_NAME = "montecarlo"
     HELP = "Very basic Monte Carlo class. Nothing is implemented"
 
-    def __init__(self, metric, num_steps, **kwargs):
+    def __init__(self, metric, **kwargs):
         self.metric = metric
-        self.num_steps = num_steps
 
     @staticmethod
     def add_arguments(parser):
@@ -37,10 +36,10 @@ class MonteCarlo(ParseableObject):
     def on_trial_end(self, step):
         pass
 
-    def run(self, obj):
+    def run(self, obj, num_steps):
         self.on_start(obj)
 
-        for step in range(self.num_steps):
+        for step in range(num_steps):
             self.on_trial_start(step)
             obj = self.trial(obj)
             self.on_trial_end(step)
