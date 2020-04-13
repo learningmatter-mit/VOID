@@ -31,6 +31,14 @@ class TestComplex(ut.TestCase):
 
         self.assertTrue(np.allclose(newguest.cart_coords, newcoords))
 
+    def test_distance_matrix(self):
+        dm = self.complex.distance_matrix
+        self.assertEqual(dm.shape, (72, 47))
+
+    def test_pose(self):
+        self.assertEqual(len(self.complex.pose), 119)
+
+
 
 if __name__ == "__main__":
     ut.main()
