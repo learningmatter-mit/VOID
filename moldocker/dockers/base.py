@@ -64,11 +64,8 @@ class Docker(ParseableObject):
     def dock_at_point(self, point, attempts):
         raise NotImplementedError
 
-    def get_fitness(self, complex):
-        return self.fitness_fn(complex.distance_matrix)
-
     def rank_complexes(self, complexes):
-        fitnesses = [self.get_fitness(cpx) for cpx in complexes]
+        fitnesses = [self.fitness_fn(cpx) for cpx in complexes]
         ranking = sorted(zip(complexes, fitnesses), key=lambda x: x[1], reverse=True)
 
         return [cpx for cpx, fit in ranking if fit >= 0]
