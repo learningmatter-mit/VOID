@@ -41,7 +41,6 @@ class TestMetropolis(ut.TestCase):
         self.assertTrue(final <= self.num_steps)
         self.assertTrue(final >= -self.num_steps)
 
-    #@ut.skip("this shows how to loop over many runs")
     def test_loopmc(self):
         initial = 0
         values = [
@@ -50,6 +49,18 @@ class TestMetropolis(ut.TestCase):
         ]
 
         self.assertTrue(np.mean(values) < 0)
+
+    def test_temperature(self):
+        def profile(step):
+            if step < 5:
+                return 1
+            return 0
+
+        self.mcarlo.temperature_profile = self.mcarlo.set_temperature_profile(profile)
+
+        self.assertEqual(self.mcarlo.update_temperature(0), 1)
+        self.assertAlmostEqual(self.mcarlo.update_temperature(5), 0, places=5)
+        self.assertAlmostEqual(self.mcarlo.update_temperature(10), 0, places=5)
 
 
 if __name__ == "__main__":
