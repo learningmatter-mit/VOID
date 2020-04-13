@@ -13,7 +13,7 @@ class MoleculeTransformer:
     def molgraph(self):
         return MoleculeGraph.with_local_env_strategy(self.mol, JmolNN())
 
-    def rotate(self, axis=None, theta=None, anchor=None):
+    def rotate(self, axis=None, theta=None, anchor=None, indices=None):
         if anchor is None:
             anchor = self.mol.center_of_mass
 
@@ -23,7 +23,7 @@ class MoleculeTransformer:
         if theta is None:
             theta = 2 * np.pi * np.random.uniform()
 
-        self.mol.rotate_sites(axis=axis, theta=theta, anchor=anchor)
+        self.mol.rotate_sites(indices=indices, axis=axis, theta=theta, anchor=anchor)
         return self.mol
 
     def translate(self, vector=None):
@@ -33,14 +33,23 @@ class MoleculeTransformer:
         self.mol.translate_sites(vector=vector)
         return self.mol
 
-    def twist_bond(self, bond=None):
+    def twist_bond(self, bond=None, theta=None):
         if bond is None:
-            bond = random.sample(self.twistable_bonds(), 1)[0]
+            bond = random.sample(self.get_twistable_bonds(), 1)[0]
 
-    def twistable_bonds(self):
+        axis = self.mol[bond[0]].coords - self.mol[bond[1]].coords
+        anchor = self.mol[bond[0]].coords
+
+        subgraphs = self.molgraph.split_molecule_subgraphs([bond], allow_reverse=True)
+        fragment = random.sample(subgraphs, 1)[0]
+        indices = [self.mol.index(site) for site in fragment.molecule]
+
+        return self.rotate(axis=axis, theta=theta, anchor=anchor, indices=indices)
+
+    def get_twistable_bonds(self):
         bonds = self.molgraph.graph.edges(data=True)
         bonds = [
-            (u, v, data)
+            [u, v, data]
             for u, v, data in bonds
             if not self.is_hydrogen(u)
             and not self.is_hydrogen(v)
@@ -49,7 +58,7 @@ class MoleculeTransformer:
         twistable = []
         for u, v, _ in bonds:
             if not self.in_same_ring(u, v):
-                twistable.append((u, v))
+                twistable.append([u, v])
 
         return twistable
 

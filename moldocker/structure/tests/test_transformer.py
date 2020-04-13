@@ -34,9 +34,33 @@ class TestTransformer(ut.TestCase):
         molgraph = self.transformer.molgraph
         self.assertEqual(len(molgraph.graph.edges), 50)
 
-        twbonds = self.transformer.twistable_bonds()
+        twbonds = self.transformer.get_twistable_bonds()
         self.assertEqual(len(twbonds), 1)
 
+    def test_twist(self):
+        theta = np.pi / 4
+
+        methyl = [0, 18, 19, 20]
+        remaining = [i for i in range(len(self.guest)) if i not in methyl]
+
+        newguest = self.transformer.twist_bond(theta=theta)
+
+        oldguest = self.guest.copy()
+        axis = oldguest[0].coords - oldguest[1].coords
+
+        if np.allclose(newguest.cart_coords[methyl], oldguest.cart_coords[methyl]):
+            anchor = oldguest[1].coords
+            oldcoords = oldguest.cart_coords[remaining] - anchor
+            newcoords = newguest.cart_coords[remaining] - anchor
+        elif np.allclose(newguest.cart_coords[remaining], oldguest.cart_coords[remaining]): 
+            anchor = oldguest[0].coords
+            oldcoords = oldguest.cart_coords[methyl]
+            newcoords = newguest.cart_coords[methyl]
+        else:
+            raise AssertionError("both fragments of the molecule were changed!")
+        
+        rot = rotation_matrix(axis, theta)
+        self.assertTrue(np.allclose(newcoords, oldcoords @ rot.T))
 
 
 if __name__ == "__main__":
