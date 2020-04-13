@@ -1,3 +1,4 @@
+import copy
 import random
 import inspect
 import numpy as np
@@ -12,8 +13,8 @@ class MonteCarlo(ParseableObject):
     PARSER_NAME = "montecarlo"
     HELP = "Very basic Monte Carlo class. Nothing is implemented"
 
-    def __init__(self, metric, **kwargs):
-        self.metric = metric
+    def __init__(self, fitness, **kwargs):
+        self.fitness = fitness
 
     @staticmethod
     def add_arguments(parser):
@@ -63,7 +64,8 @@ class MarkovChainMC(MonteCarlo):
 
     def trial(self, obj):
         action = self.sample_action()
-        newobj = action(self, obj)
+
+        newobj = action(self, copy.deepcopy(obj))
 
         if self.accept(newobj, obj):
             obj = newobj
@@ -80,7 +82,7 @@ class MarkovChainMC(MonteCarlo):
 
 class Metropolis(MarkovChainMC):
     PARSER_NAME = "metropolis"
-    HELP = "Try different actions onto a given object to maximize the given metric using the Metropolis-Hastings algorithm"
+    HELP = "Try different actions onto a given object to maximize the given fitness using the Metropolis-Hastings algorithm"
 
     def __init__(self, *args, temperature, temperature_profile=None, **kwargs):
         """
@@ -100,7 +102,9 @@ class Metropolis(MarkovChainMC):
         return profile
 
     def accept(self, new, old):
-        delta_e = self.metric(new) - self.metric(old)
+        """Convention: Metropolis tries to maximize the fitness"""
+        # accept if the new fitness is larger than the old one
+        delta_e = self.fitness(old) - self.fitness(new)
 
         if self.temperature == 0:
             return delta_e < 0

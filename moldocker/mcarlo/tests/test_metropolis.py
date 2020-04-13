@@ -4,7 +4,7 @@ import unittest as ut
 from moldocker.mcarlo import Metropolis, Action
 
 
-def example_metric(number):
+def example_fitness(number):
     return number
 
 
@@ -23,7 +23,7 @@ class ExampleMetropolis(Metropolis):
 
 class TestMetropolis(ut.TestCase):
     def setUp(self):
-        self.fitness = example_metric
+        self.fitness = example_fitness
         self.num_steps = 10
         self.num_loops = 20
         self.temperature = 1
