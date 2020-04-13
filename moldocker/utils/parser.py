@@ -1,5 +1,5 @@
 import argparse
-from moldocker import dockers, samplers, fitness
+from moldocker import dockers, samplers, fitness, mcarlo
 
 
 class Parser:
