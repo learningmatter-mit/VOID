@@ -1,3 +1,5 @@
+import numpy as np
+
 from .base import MonteCarlo
 
 
@@ -10,13 +12,9 @@ class MonteCarloDocker(Metropolis):
 
     @self.action
     def translate(self, cpx):
-        raise NotImplementedError
+        cpx.translate_guest()
 
     @self.action
     def rotate(self, cpx):
-        raise NotImplementedError
-
-    @self.action
-    def dock(self, cpx):
-        raise NotImplementedError
+        cpx.rotate_guest()
 

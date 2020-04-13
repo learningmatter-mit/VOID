@@ -1,4 +1,7 @@
 import random
+import inspect
+import numpy as np
+
 from moldocker.object import ParseableObject
 
 
@@ -9,7 +12,7 @@ class MonteCarlo(ParseableObject):
     PARSER_NAME = "montecarlo"
     HELP = "Very basic Monte Carlo class. Nothing is implemented"
 
-    def __init__(self, metric, num_steps,  **kwargs):
+    def __init__(self, metric, num_steps, **kwargs):
         self.metric = metric
         self.num_steps = num_steps
 
@@ -55,20 +58,13 @@ class MarkovChainMC(MonteCarlo):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.action = self.make_actions()
 
-    def make_actions(self):
-        actions = {}
-        def mkaction(func):
-            actions[func.__name__] = func
-            return func
-
-        mkaction.all = actions
-        return mkaction
+    def get_actions(self):
+        return Action.get_actions(self)
 
     def trial(self, obj):
         action = self.sample_action()
-        newobj = action(obj)
+        newobj = action(self, obj)
 
         if self.accept(newobj, obj):
             obj = newobj
@@ -76,7 +72,8 @@ class MarkovChainMC(MonteCarlo):
         return obj
 
     def sample_action(self):
-        return random.sample(self.action.all, 1)
+        actions = self.get_actions()
+        return random.sample(actions, 1)[0]
 
     def accept(self, new, old):
         return np.random.uniform() >= 0.5
@@ -95,7 +92,7 @@ class Metropolis(MarkovChainMC):
         super().__init__(*args, **kwargs)
         self.temperature = temperature
         if temperature_profile is None:
-            self.temperature_profile = lambda step: return temperature
+            self.temperature_profile = lambda step: temperature
         else:
             assert hasattr(temperature_profile, '__call__'), "Temperature profile is not callable"
             self.temperature_profile = temperature_profile
@@ -111,4 +108,26 @@ class Metropolis(MarkovChainMC):
         self.temperature = self.temperature_profile(step)
 
 
+class Action:
+    """Decorator that defines an action for MCMC-derived classes.
+        It basically appends the function `action` itself as an attribute
+        of the new method.
+    """
 
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
+
+    @staticmethod
+    def is_action(obj):
+        return isinstance(obj, Action)
+
+    @staticmethod
+    def get_actions(cls):
+        """Return methods in `cls` that are actions"""
+        return [
+            fn
+            for name, fn in inspect.getmembers(cls, Action.is_action)
+        ]
