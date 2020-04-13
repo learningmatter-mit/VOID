@@ -1,6 +1,8 @@
 import numpy as np
 from pymatgen.core import Molecule, Structure
 
+from moldocker.utils.geometry import random_rotation_matrices
+
 
 class Complex:
     def __init__(
@@ -15,6 +17,9 @@ class Complex:
 
         self.host = host
         self.guest = guest
+
+    def __len__(self):
+        return len(self.host) + len(self.guest)
 
     @property
     def pose(self):
@@ -34,9 +39,6 @@ class Complex:
             site_properties=props,
         )
 
-    def __len__(self):
-        return len(self.host) + len(self.guest)
-
     @property
     def distance_matrix(self):
         """Returns the distance matrix between
@@ -50,3 +52,24 @@ class Complex:
         return self.host.lattice.get_fractional_coords(coords.reshape(-1, 3)).reshape(
             coords.shape
         )
+
+    def rotate_guest(self, axis=None, theta=None, anchor=None):
+        if anchor is None:
+            anchor = self.guest.center_of_mass
+
+        if axis is None:
+            axis = np.random.randn(3)
+
+        if theta is None:
+            theta = 2 * np.pi * np.random.uniform()
+
+        self.guest.rotate_sites(axis=axis, theta=theta, anchor=anchor)
+        return self.guest
+
+    def translate_guest(self, vector=None):
+        if vector is None:
+            vector = np.random.randn(3)
+
+        self.guest.translate_sites(vector=vector)
+        return self.guest
+
