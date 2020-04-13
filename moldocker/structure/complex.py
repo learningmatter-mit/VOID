@@ -1,6 +1,7 @@
 import numpy as np
 from pymatgen.core import Molecule, Structure
 
+from .molecule import MoleculeTransformer
 from moldocker.utils.geometry import random_rotation_matrices
 
 
@@ -17,6 +18,7 @@ class Complex:
 
         self.host = host
         self.guest = guest
+        self.guest_transform = MoleculeTransformer(self.guest)
 
     def __len__(self):
         return len(self.host) + len(self.guest)
@@ -57,22 +59,10 @@ class Complex:
         )
 
     def rotate_guest(self, axis=None, theta=None, anchor=None):
-        if anchor is None:
-            anchor = self.guest.center_of_mass
-
-        if axis is None:
-            axis = np.random.randn(3)
-
-        if theta is None:
-            theta = 2 * np.pi * np.random.uniform()
-
-        self.guest.rotate_sites(axis=axis, theta=theta, anchor=anchor)
+        self.guest = self.guest_transform.rotate(axis, theta, anchor)
         return self
 
     def translate_guest(self, vector=None):
-        if vector is None:
-            vector = np.random.randn(3)
-
-        self.guest.translate_sites(vector=vector)
+        self.guest = self.guest_transform.translate(vector)
         return self
 
