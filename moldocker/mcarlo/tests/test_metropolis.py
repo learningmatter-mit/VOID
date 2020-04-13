@@ -48,7 +48,7 @@ class TestMetropolis(ut.TestCase):
             for _ in range(self.num_loops)
         ]
 
-        self.assertTrue(np.mean(values) < 0)
+        self.assertTrue(np.mean(values) > 0)
 
     def test_temperature(self):
         def profile(step):

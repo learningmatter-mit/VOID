@@ -1,1 +1,3 @@
-from .base import MonteCarlo, MarkovChainMC, Metropolis, Action
+from .base import MonteCarlo
+from .mcmc import MarkovChainMC, Action
+from .metropolis import Metropolis

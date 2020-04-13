@@ -1,9 +1,8 @@
 import numpy as np
 import unittest as ut
 
-from moldocker.mcarlo import MonteCarlo, MarkovChainMC, Metropolis
-from moldocker.samplers import OriginSampler
-from moldocker.fitness import MinDistanceFitness
+from moldocker.mcarlo import MonteCarlo
+from moldocker.fitness import Fitness
 
 from moldocker.tests.test_inputs import load_structure, load_molecule
 
@@ -15,7 +14,7 @@ class ExampleMC(MonteCarlo):
 
 class TestMonteCarlo(ut.TestCase):
     def setUp(self):
-        self.fitness = MinDistanceFitness(threshold=1.5)
+        self.fitness = Fitness(threshold=1.5)
         self.num_steps = 10
         self.mcarlo = ExampleMC(self.fitness)
 

@@ -2,7 +2,7 @@ import numpy as np
 import unittest as ut
 
 from moldocker.mcarlo import MarkovChainMC, Action
-from moldocker.fitness import MinDistanceFitness
+from moldocker.fitness import Fitness
 
 
 class ExampleMCMC(MarkovChainMC):
@@ -20,7 +20,7 @@ class ExampleMCMC(MarkovChainMC):
 
 class TestMCMC(ut.TestCase):
     def setUp(self):
-        self.fitness = MinDistanceFitness(threshold=1.5)
+        self.fitness = Fitness(threshold=1.5)
         self.num_steps = 10
         self.num_loops = 20
         self.mcarlo = ExampleMCMC(self.fitness)
