@@ -1,7 +1,7 @@
 import numpy as np
 import unittest as ut
 
-from moldocker.structure import MoleculeTransformer
+from moldocker.structure import MoleculeTransformer, FragmentCreator
 from moldocker.utils.geometry import rotation_matrix
 from moldocker.tests.test_inputs import load_molecule, load_fragments
 
@@ -67,6 +67,8 @@ class TestTransformer(ut.TestCase):
         import networkx as nx
 
         frag = self.fragments[3]
+        frag = FragmentCreator(frag).get_fragment()
+
         self.transformer.substitute(frag)
         coordination = nx.degree(self.transformer.molgraph.graph)
 
