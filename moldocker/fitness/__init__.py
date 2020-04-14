@@ -1,4 +1,8 @@
 from .base import Fitness
-from .distances import MinDistanceFitness, MeanDistanceFitness
+from .threshold import MinDistanceFitness, MeanDistanceFitness
+from .target import MinDistanceGaussianTarget, MeanDistanceGaussianTarget
 
-__all__ = [MinDistanceFitness, MeanDistanceFitness]
+__all__ = [
+    MinDistanceFitness, MeanDistanceFitness,
+    MinDistanceGaussianTarget, MeanDistanceGaussianTarget,
+]
