@@ -4,7 +4,7 @@ from pymatgen.core import Molecule
 
 class FragmentCreator:
     RADICAL_SPECIES = 'X0+'
-    NBR_RADIUS = 1.5
+    NBR_RADIUS = 2
 
     def __init__(self, frag):
         """Create fragments from molecules to make them appropriate for
