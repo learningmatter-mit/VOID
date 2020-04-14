@@ -9,35 +9,39 @@ class MoleculeAnalyzer:
     """Assorted tools to analyze a molecule and its parts"""
     def __init__(self, molecule):
         self.mol = molecule
+        self.update_properties()
+
+    def update_properties(self):
+        self.rings = self.molgraph.find_rings()
+        self.bonds = self.molgraph.graph.edges(data=False)
 
     @property
     def molgraph(self):
         return MoleculeGraph.with_local_env_strategy(self.mol, JmolNN())
 
     def get_twistable_bonds(self):
-        bonds = self.molgraph.graph.edges(data=True)
-        bonds = [
-            [u, v, data]
-            for u, v, data in bonds
-            if not self.is_hydrogen(u)
-            and not self.is_hydrogen(v)
+        return [
+            [u, v]
+            for u, v in self.bonds
+            if self.is_twistable(u, v)
         ]
 
-        twistable = []
-        for u, v, _ in bonds:
-            if not self.in_same_ring(u, v):
-                twistable.append([u, v])
-
-        return twistable
+    def is_twistable(self, u, v):
+        """Returns true if bond defined by indices u, v form
+            a twistable bond"""
+        return (
+            not self.is_hydrogen(u)
+            and not self.is_hydrogen(v)
+            and not self.in_same_ring(u, v)
+        )
 
     def is_hydrogen(self, idx):
         return self.mol[idx].species_string == 'H'
 
     def in_same_ring(self, u, v):
-        rings = self.molgraph.find_rings()
         return any([
             (u, v) in ring or (v, u) in ring
-            for ring in rings
+            for ring in self.rings
         ])
 
 
@@ -78,8 +82,14 @@ class MoleculeTransformer(MoleculeAnalyzer):
 
         return self.rotate(axis=axis, theta=theta, anchor=anchor, indices=indices)
 
-    def substitute(self, atom, fragment):
+    def substitute(self, fragment, atom=None):
         """Replaces the given atom by fragment"""
-        # sample hydrogen from fragment
-        # make bond parallel to the axis of the other bond
-        # remove one atom, put fragment in its position
+        if atom is None:
+            hydrogens = [i for i in range(len(self.mol)) if self.is_hydrogen(i)]
+            atom = random.sample(hydrogens, 1)[0]
+
+        self.molgraph.substitute_group(atom, fragment, JmolNN)
+
+        self.update_properties()
+        
+        return self.mol

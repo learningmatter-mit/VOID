@@ -64,12 +64,15 @@ class TestTransformer(ut.TestCase):
         self.assertTrue(np.allclose(newcoords, rotcoords))
 
     def test_substitute(self):
-        methyl = MoleculeTransformer(self.fragments[0])
-        ethyl = MoleculeTransformer(self.fragments[1])
-        methyl.substitute(1, ethyl.molgraph)
-        import pdb
-        pdb.set_trace()
+        import networkx as nx
 
+        frag = self.fragments[3]
+        self.transformer.substitute(frag)
+        coordination = nx.degree(self.transformer.molgraph.graph)
+
+        self.assertTrue(all([
+            deg <= 4 for deg in dict(coordination).values()
+        ]))
 
 
 if __name__ == "__main__":
