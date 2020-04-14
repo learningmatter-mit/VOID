@@ -11,6 +11,7 @@ This software requires the following packages:
 - [numpy](https://numpy.org/)
 - [pymatgen](https://pymatgen.org)
 - [scikit-learn](https://scikit-learn.org/stable/)
+- [networkx](https://networkx.github.io/)
 
 ```bash
 conda upgrade conda
