@@ -11,6 +11,7 @@ class TestTransformer(ut.TestCase):
         self.guest = load_molecule()
         self.fragments = load_fragments()
         self.transformer = MoleculeTransformer(self.guest.copy())
+        self.smallguest = load_molecule("ammonium.xyz")
 
     def test_rotate(self):
         axis = np.array([0, 0, 1])
@@ -62,6 +63,13 @@ class TestTransformer(ut.TestCase):
         rot = rotation_matrix(axis, theta)
         rotcoords = oldcoords @ rot.T
         self.assertTrue(np.allclose(newcoords, rotcoords))
+
+    def test_twist_small_molecule(self):
+        transformer = MoleculeTransformer(self.smallguest)
+        try:
+            newguest = self.transformer.twist_bond()
+        except ValueError:
+            self.fail("error while twisting the bond of a small molecule")
 
     def test_substitute(self):
         import networkx as nx

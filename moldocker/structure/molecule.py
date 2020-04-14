@@ -17,12 +17,24 @@ class MoleculeAnalyzer:
         self.bonds = self.molgraph.graph.edges(data=False)
 
     def get_twistable_bonds(self):
-        return [
+        bonds = [
             [u, v]
             for u, v in self.bonds
             if self.is_twistable(u, v)
         ]
 
+        if len(bonds) == 0:
+            return self.get_bonds_outside_rings()
+
+        return bonds
+
+    def get_bonds_outside_rings(self):
+        return [
+            [u, v]
+            for u, v in self.bonds
+            if not self.in_same_ring(u, v)
+        ]
+        
     def is_twistable(self, u, v):
         """Returns true if bond defined by indices u, v form
             a twistable bond"""
