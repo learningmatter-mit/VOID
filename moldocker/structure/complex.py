@@ -9,7 +9,7 @@ class Complex:
     def __init__(
         self, host, guest,
     ):
-        """Constructor for host-guest pair.
+        """Constructor for host-guest pair. The `guest_transform` is useful to perform operations on the molecule. It performs all changes in place, meaning that the MoleculeTransformer has to have access to the reference of `self.guest` in order to be effective.
 
         Args:
             host (Structure)
@@ -57,12 +57,3 @@ class Complex:
         return self.host.lattice.get_fractional_coords(coords.reshape(-1, 3)).reshape(
             coords.shape
         )
-
-    def rotate_guest(self, axis=None, theta=None, anchor=None):
-        self.guest = self.guest_transform.rotate(axis, theta, anchor)
-        return self
-
-    def translate_guest(self, vector=None):
-        self.guest = self.guest_transform.translate(vector)
-        return self
-

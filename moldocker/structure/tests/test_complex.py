@@ -15,7 +15,7 @@ class TestComplex(ut.TestCase):
     def test_rotate(self):
         axis = np.array([0, 0, 1])
         theta = np.pi / 4
-        newguest = self.complex.rotate_guest(axis, theta).guest
+        newguest = self.complex.guest_transform.rotate(axis, theta)
         oldguest = self.guest.get_centered_molecule()
 
         rot = rotation_matrix(axis, theta)
@@ -25,7 +25,7 @@ class TestComplex(ut.TestCase):
 
     def test_translate(self):
         vec = np.array([0, 0, 1])
-        newguest = self.complex.translate_guest(vec).guest
+        newguest = self.complex.guest_transform.translate(vec)
 
         newcoords = self.guest.cart_coords + vec
 
