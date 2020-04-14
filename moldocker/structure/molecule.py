@@ -5,13 +5,45 @@ from pymatgen.analysis.local_env import JmolNN
 from pymatgen.analysis.graphs import MoleculeGraph
 
 
-class MoleculeTransformer:
+class MoleculeAnalyzer:
+    """Assorted tools to analyze a molecule and its parts"""
     def __init__(self, molecule):
         self.mol = molecule
 
     @property
     def molgraph(self):
         return MoleculeGraph.with_local_env_strategy(self.mol, JmolNN())
+
+    def get_twistable_bonds(self):
+        bonds = self.molgraph.graph.edges(data=True)
+        bonds = [
+            [u, v, data]
+            for u, v, data in bonds
+            if not self.is_hydrogen(u)
+            and not self.is_hydrogen(v)
+        ]
+
+        twistable = []
+        for u, v, _ in bonds:
+            if not self.in_same_ring(u, v):
+                twistable.append([u, v])
+
+        return twistable
+
+    def is_hydrogen(self, idx):
+        return self.mol[idx].species_string == 'H'
+
+    def in_same_ring(self, u, v):
+        rings = self.molgraph.find_rings()
+        return any([
+            (u, v) in ring or (v, u) in ring
+            for ring in rings
+        ])
+
+
+class MoleculeTransformer(MoleculeAnalyzer):
+    def __init__(self, molecule):
+        super().__init__(molecule)
 
     def rotate(self, axis=None, theta=None, anchor=None, indices=None):
         if anchor is None:
@@ -46,32 +78,8 @@ class MoleculeTransformer:
 
         return self.rotate(axis=axis, theta=theta, anchor=anchor, indices=indices)
 
-    def get_twistable_bonds(self):
-        bonds = self.molgraph.graph.edges(data=True)
-        bonds = [
-            [u, v, data]
-            for u, v, data in bonds
-            if not self.is_hydrogen(u)
-            and not self.is_hydrogen(v)
-        ]
-
-        twistable = []
-        for u, v, _ in bonds:
-            if not self.in_same_ring(u, v):
-                twistable.append([u, v])
-
-        return twistable
-
-    def is_hydrogen(self, idx):
-        return self.mol[idx].species_string == 'H'
-
-    def in_same_ring(self, u, v):
-        rings = self.molgraph.find_rings()
-        return any([
-            (u, v) in ring or (v, u) in ring
-            for ring in rings
-        ])
-
-
-
-
+    def substitute(self, atom, fragment):
+        """Replaces the given atom by fragment"""
+        # sample hydrogen from fragment
+        # make bond parallel to the axis of the other bond
+        # remove one atom, put fragment in its position

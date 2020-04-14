@@ -3,12 +3,13 @@ import unittest as ut
 
 from moldocker.structure import MoleculeTransformer
 from moldocker.utils.geometry import rotation_matrix
-from moldocker.tests.test_inputs import load_molecule
+from moldocker.tests.test_inputs import load_molecule, load_fragments
 
 
 class TestTransformer(ut.TestCase):
     def setUp(self):
         self.guest = load_molecule()
+        self.fragments = load_fragments()
         self.transformer = MoleculeTransformer(self.guest.copy())
 
     def test_rotate(self):
@@ -47,20 +48,28 @@ class TestTransformer(ut.TestCase):
 
         oldguest = self.guest.copy()
         axis = oldguest[0].coords - oldguest[1].coords
+        anchor = oldguest[0].coords
 
         if np.allclose(newguest.cart_coords[methyl], oldguest.cart_coords[methyl]):
-            anchor = oldguest[1].coords
             oldcoords = oldguest.cart_coords[remaining] - anchor
             newcoords = newguest.cart_coords[remaining] - anchor
         elif np.allclose(newguest.cart_coords[remaining], oldguest.cart_coords[remaining]): 
-            anchor = oldguest[0].coords
-            oldcoords = oldguest.cart_coords[methyl]
-            newcoords = newguest.cart_coords[methyl]
+            oldcoords = oldguest.cart_coords[methyl] - anchor
+            newcoords = newguest.cart_coords[methyl] - anchor
         else:
             raise AssertionError("both fragments of the molecule were changed!")
         
         rot = rotation_matrix(axis, theta)
-        self.assertTrue(np.allclose(newcoords, oldcoords @ rot.T))
+        rotcoords = oldcoords @ rot.T
+        self.assertTrue(np.allclose(newcoords, rotcoords))
+
+    def test_substitute(self):
+        methyl = MoleculeTransformer(self.fragments[0])
+        ethyl = MoleculeTransformer(self.fragments[1])
+        methyl.substitute(1, ethyl.molgraph)
+        import pdb
+        pdb.set_trace()
+
 
 
 if __name__ == "__main__":
