@@ -1,3 +1,4 @@
+import random
 import numpy as np
 
 from .mcmc import Action
@@ -8,13 +9,30 @@ class Grower(Metropolis):
     PARSER_NAME = "grower"
     HELP = "Grows a guest inside a host."
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, fragments, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fragments = fragments
+
+    def sample_fragment(self):
+        return random.sample(self.fragments, 1)[0]
 
     @Action
     def translate(self, cpx):
-        return cpx.translate_guest()
+        cpx.guest_transform.translate()
+        return cpx
 
     @Action
     def rotate(self, cpx):
-        return cpx.rotate_guest()
+        cpx.guest_transform.rotate()
+        return cpx
+
+    @Action
+    def twist_bond(self, cpx):
+        cpx.guest_transform.twist_bond()
+        return cpx
+
+    @Action
+    def grow(self, cpx):
+        frag = self.sample_fragment()
+        cpx.guest_transform.substitute(frag)
+        return cpx
