@@ -36,3 +36,4 @@ class Grower(Metropolis):
         frag = self.sample_fragment()
         cpx.guest_transform.substitute(frag)
         return cpx
+
