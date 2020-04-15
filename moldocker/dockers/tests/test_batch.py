@@ -29,13 +29,13 @@ class TestBatch(ut.TestCase):
         self.assertEqual(coords.shape, (10, 72, 3))
 
     def test_dock(self):
-        poses = []
-        while len(poses) == 0:
-            poses = self.docker.dock(10)
+        complexes = []
+        while len(complexes) == 0:
+            complexes = self.docker.dock(10)
 
-        self.assertIsInstance(poses, list)
+        self.assertIsInstance(complexes, list)
 
-        pose = poses[0].pose
+        pose = complexes[0].pose
         self.assertEqual(len(pose), 119)
 
         self.assertTrue(pose.distance_matrix[:72, 72:].min() > 1.5)
