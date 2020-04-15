@@ -49,9 +49,22 @@ class Complex:
         """Returns the distance matrix between
             the host (rows) and the guest (columns).
         """
-        return self.host.lattice.get_all_distances(
-            self.host.frac_coords, self.to_frac_coords(self.guest.cart_coords)
-        )
+        return self.get_distance_matrix(structure='complex')
+
+    def get_distance_matrix(self, structure='complex'):
+        if structure == 'complex':
+            return self.host.lattice.get_all_distances(
+                self.host.frac_coords, self.to_frac_coords(self.guest.cart_coords)
+            )
+        elif structure == 'host':
+            return self.host.distance_matrix
+        elif structure == 'guest':
+            return self.host.lattice.get_all_distances(
+                self.to_frac_coords(self.guest.cart_coords),
+                self.to_frac_coords(self.guest.cart_coords)
+            )
+        else:
+            raise ValueError("invalid structure name")
 
     def to_frac_coords(self, coords):
         return self.host.lattice.get_fractional_coords(coords.reshape(-1, 3)).reshape(
