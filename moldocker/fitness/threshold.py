@@ -60,7 +60,7 @@ class ThresholdFitness(Fitness):
 
     def normalize(self, value):
         if self.step:
-            return 1 if value > 0 else 0
+            return 1 if value > 0 else -1
         return value
 
 
