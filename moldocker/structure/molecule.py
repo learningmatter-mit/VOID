@@ -6,6 +6,9 @@ from pymatgen.analysis.local_env import JmolNN
 from pymatgen.analysis.graphs import MoleculeGraph
 
 
+HYDROGEN_CUTOFF = 1.2
+
+
 class MoleculeAnalyzer:
     """Assorted tools to analyze a molecule and its parts"""
     def __init__(self, molecule):
@@ -59,6 +62,30 @@ class MoleculeAnalyzer:
             for ring in self.rings
         ])
 
+    def get_hydrogens(self):
+        return [i for i in range(len(self.mol)) if self.is_hydrogen(i)]
+
+    def get_non_hydrogen_neighbors(self, atom):
+        return [nbr
+            for nbr in self.mol.get_neighbors(self.mol[atom], HYDROGEN_CUTOFF)
+            if not self.is_hydrogen(nbr.index)
+        ]
+
+    def find_hydrogen_bridges(self):
+        """Get hydrogens which are close to two heavier atoms"""
+        hydrogens = self.get_hydrogens()
+
+        num_nbrs = [
+            len(self.get_non_hydrogen_neighbors(i))
+            for i in hydrogens
+        ]
+
+        return [
+            site
+            for site, n in zip(hydrogens, num_nbrs)
+            if n >= 2
+        ]
+
 
 class MoleculeTransformer(MoleculeAnalyzer):
     def __init__(self, molecule):
@@ -100,11 +127,15 @@ class MoleculeTransformer(MoleculeAnalyzer):
     def substitute(self, fragment, atom=None):
         """Replaces the given atom by fragment"""
         if atom is None:
-            hydrogens = [i for i in range(len(self.mol)) if self.is_hydrogen(i)]
-            atom = random.sample(hydrogens, 1)[0]
+            atom = random.sample(self.get_hydrogens(), 1)[0]
 
         self.molgraph.substitute_group(atom, fragment, JmolNN)
 
         self.update_properties()
         
         return self.mol
+
+    def close_ring(self, atom=None):
+        """Creates a ring between close atoms"""
+        raise NotImplementedError
+
