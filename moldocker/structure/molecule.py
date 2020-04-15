@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import networkx as nx
 from pymatgen.core import Molecule
 from pymatgen.analysis.local_env import JmolNN
 from pymatgen.analysis.graphs import MoleculeGraph
@@ -13,8 +14,13 @@ class MoleculeAnalyzer:
 
     def update_properties(self):
         self.molgraph = MoleculeGraph.with_local_env_strategy(self.mol, JmolNN())
-        self.rings = self.molgraph.find_rings()
+        #self.rings = self.molgraph.find_rings()
+        self.rings = self.find_rings()
         self.bonds = self.molgraph.graph.edges(data=False)
+
+    def find_rings(self):
+        G = nx.Graph(self.molgraph.graph)
+        return list(nx.algorithms.cycles.cycle_basis(G))
 
     def get_twistable_bonds(self):
         bonds = [
@@ -49,7 +55,7 @@ class MoleculeAnalyzer:
 
     def in_same_ring(self, u, v):
         return any([
-            (u, v) in ring or (v, u) in ring
+            u in ring and v in ring
             for ring in self.rings
         ])
 

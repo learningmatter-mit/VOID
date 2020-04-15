@@ -29,7 +29,7 @@ class TestGrower(ut.TestCase):
         self.fitness = MultipleFitness(fitness, weights)
 
         self.num_steps = 200
-        self.temperature = 0.1
+        self.temperature = 0
 
         self.mcdocker = Grower(
             fitness=self.fitness,
