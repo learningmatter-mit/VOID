@@ -32,7 +32,7 @@ class TestGrower(ut.TestCase):
         self.temperature = 0.1
         self.temperature_profile = lambda step: 0.1 if step < 100 else 0
 
-        self.mcdocker = Grower(
+        self.grower = Grower(
             fitness=self.fitness,
             temperature=self.temperature,
             temperature_profile=self.temperature_profile,
@@ -40,7 +40,7 @@ class TestGrower(ut.TestCase):
         )
 
     def test_examplemc(self):
-        cpx = self.mcdocker.run(self.complex.copy(), self.num_steps)
+        cpx = self.grower.run(self.complex.copy(), self.num_steps)
 
         with open('/tmp/pose.cif', 'w') as f:
             f.write(cpx.pose.to('cif'))
