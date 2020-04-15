@@ -3,7 +3,7 @@ import unittest as ut
 
 from moldocker.mcarlo import Grower
 from moldocker.structure import FragmentCreator, Complex
-from moldocker.fitness import MinDistanceGaussianTarget, MinDistanceFitness, MultipleFitness
+from moldocker.fitness import MinDistanceGaussianTarget, MinDistanceFitness, MultipleFitness, SumInvDistanceFitness
 from moldocker.tests.test_inputs import load_fragments, load_structure
 
 
@@ -25,24 +25,31 @@ class TestGrower(ut.TestCase):
             MinDistanceFitness(threshold=0.85, structure='guest', step=True),
             MinDistanceFitness(threshold=1.1, structure='complex', step=True)
         ]
-        weights = [5, 100, 100]
+        weights = [50, 1e10, 1e10]
         self.fitness = MultipleFitness(fitness, weights)
 
         self.num_steps = 200
-        self.temperature = 0
+        self.temperature = 0.1
+        self.temperature_profile = lambda step: 0.1 if step < 100 else 0
 
         self.mcdocker = Grower(
             fitness=self.fitness,
             temperature=self.temperature,
+            temperature_profile=self.temperature_profile,
             fragments=self.fragments
         )
 
     def test_examplemc(self):
         cpx = self.mcdocker.run(self.complex.copy(), self.num_steps)
-        self.assertTrue(np.abs(cpx.distance_matrix.min() - self.target) < self.tolerance)
 
         with open('/tmp/pose.cif', 'w') as f:
             f.write(cpx.pose.to('cif'))
+
+        with open('/tmp/guest.xyz', 'w') as f:
+            f.write(cpx.guest.to('xyz'))
+
+        self.assertTrue(np.abs(cpx.distance_matrix.min() - self.target) < self.tolerance)
+
 
 
 if __name__ == "__main__":

@@ -37,6 +37,3 @@ class Grower(Metropolis):
         cpx.guest_transform.substitute(frag)
         return cpx
 
-    def on_trial_start(self, step):
-        print(step)
-
