@@ -1,5 +1,4 @@
 import argparse
-from moldocker import dockers, samplers, fitness, mcarlo
 
 
 class Parser:
@@ -38,8 +37,8 @@ class Parser:
     def add_extra_main_kwargs(self):
         pass
 
-    def get_parent_parsers(self):
-        return [self.parent_parser]
+    def get_parent_parsers(self, options):
+        return [self.parser]
 
     def parse_args(self, args=None):
         options, _ = self.parser.parse_known_args(args)

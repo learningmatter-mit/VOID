@@ -1,22 +1,23 @@
 import numpy as np
 import unittest as ut
 
-from moldocker.utils.parser.base import Parser
+from moldocker.utils.parser import GrowParser
 
 
 class TestParser(ut.TestCase):
     def setUp(self):
-        self.parser = Parser()
+        self.parser = GrowParser()
 
     def test_parse(self):
         args = [
             "../../tests/files/AFI.cif",
             "../../tests/files/molecule.xyz",
+            "--mcarlo",
+            "grower",
         ]
 
         parsed = self.parser.parse_args(args)
-        self.assertEqual(parsed.input[0], "../../tests/files/AFI.cif")
-        self.assertEqual(parsed.input[1], "../../tests/files/molecule.xyz")
+        self.assertEqual(parsed.mcarlo, "grower")
 
 
 if __name__ == "__main__":
