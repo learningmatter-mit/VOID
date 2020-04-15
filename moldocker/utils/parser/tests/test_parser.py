@@ -1,7 +1,7 @@
 import numpy as np
 import unittest as ut
 
-from moldocker.utils.parser import Parser
+from moldocker.utils.parser.base import Parser
 
 
 class TestParser(ut.TestCase):

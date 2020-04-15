@@ -2,14 +2,14 @@
 import os
 import logging
 
-from moldocker.utils.parser import Parser
+from moldocker.utils.parser import DockParser
 from moldocker.utils.setup import SetupRun
 from moldocker.io.cif import write_cif
 
 
 if __name__ == "__main__":
     # parse arguments
-    parser = Parser()
+    parser = DockParser()
     args = parser.parse_args()
 
     setup = SetupRun(args)
