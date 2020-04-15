@@ -12,9 +12,11 @@ class MonteCarloDocker(Metropolis):
 
     @Action
     def translate(self, cpx):
-        return cpx.translate_guest()
+        cpx.guest_transform.translate()
+        return cpx
 
     @Action
     def rotate(self, cpx):
-        return cpx.rotate_guest()
+        cpx.guest_transform.rotate()
+        return cpx
 
