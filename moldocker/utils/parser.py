@@ -16,6 +16,7 @@ class Parser:
         self.docker_opts = self.get_dockers_parsers()
         self.sampler_opts = self.get_samplers_parsers()
         self.fitness_opts = self.get_fitness_parsers()
+        self.mcarlo_opts = self.get_mcarlo_parsers()
 
     def get_module_parsers(self, module):
         return {cls.PARSER_NAME: cls.get_parser() for cls in module.__all__}
@@ -53,6 +54,17 @@ class Parser:
         )
         return parsers
 
+    def get_mcarlo_parsers(self):
+        parsers = self.get_module_parsers(mcarlo)
+        self.parser.add_argument(
+            "-m",
+            "--mcarlo",
+            type=str,
+            help="Monte Carlo utility to be used",
+            choices=list(parsers.keys()),
+        )
+        return parsers
+
     def add_main_kwargs(self):
         self.parser.add_argument(
             "input",
@@ -83,6 +95,7 @@ class Parser:
             self.docker_opts[options.docker],
             self.sampler_opts[options.sampler],
             self.fitness_opts[options.fitness],
+            self.mcarlo_opts[options.mcarlo],
         ]
 
         if options.subdock:

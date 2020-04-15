@@ -18,6 +18,8 @@ class TestParser(ut.TestCase):
             "voronoi_cluster",
             "--fitness",
             "min_distance",
+            "--mcarlo",
+            "grower",
             "--subdock",
         ]
 
@@ -25,6 +27,7 @@ class TestParser(ut.TestCase):
         self.assertEqual(parsed.docker, "batch")
         self.assertEqual(parsed.sampler, "voronoi_cluster")
         self.assertEqual(parsed.fitness, "min_distance")
+        self.assertEqual(parsed.mcarlo, "grower")
 
 
 if __name__ == "__main__":
