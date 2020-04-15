@@ -48,19 +48,19 @@ class ThresholdFitness(Fitness):
             return complex.distance_matrix
 
         elif self.structure == 'host':
-            idx = np.triu_indices(len(complex.host))
-            return complex.host.distance_matrix[idx]
+            idx = np.triu_indices(len(complex.host), k=1)
+            return complex.get_distance_matrix('host')[idx]
 
         elif self.structure == 'guest':
-            idx = np.triu_indices(len(complex.guest))
-            return complex.guest.distance_matrix[idx]
+            idx = np.triu_indices(len(complex.guest), k=1)
+            return complex.get_distance_matrix('guest')[idx]
 
         else:
             raise ValueError("structure type not supported")
 
     def normalize(self, value):
         if self.step:
-            return 1 if value > 0 else -1
+            return 0 if value > 0 else -1
         return value
 
 
@@ -78,3 +78,14 @@ class MeanDistanceFitness(ThresholdFitness):
 
     def __call__(self, complex, axis=-1):
         return self.normalize(self.get_distances(complex).min(axis=axis).mean() - self.threshold)
+
+
+class SumInvDistanceFitness(ThresholdFitness):
+    PARSER_NAME = "sum_distance"
+    HELP = "Complexes have positive score if the sum of distances is above the given threshold"
+
+    def __call__(self, complex):
+        distances = self.get_distances(complex)
+        distances = distances[distances < 2 * self.threshold]
+
+        return self.normalize(-np.mean(1 / distances))
