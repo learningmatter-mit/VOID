@@ -15,7 +15,7 @@ This software requires the following packages:
 
 ```bash
 conda upgrade conda
-conda create -n moldocker python=3.7 numpy pymatgen>=2020.3.2 scikit-learn -c conda-forge
+conda create -n moldocker python=3.7 numpy networkx pymatgen>=2020.3.2 scikit-learn -c conda-forge
 ```
 
 You need to activate the `moldocker` environment to install the `moldocker` package:
