@@ -45,4 +45,3 @@ class MonteCarlo(ParseableObject):
 
     def trial(self, obj):
         return obj
-

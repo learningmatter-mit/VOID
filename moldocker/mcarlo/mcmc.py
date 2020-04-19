@@ -53,7 +53,4 @@ class Action:
     @staticmethod
     def get_actions(cls):
         """Return methods in `cls` that are actions"""
-        return [
-            fn
-            for name, fn in inspect.getmembers(cls, Action.is_action)
-        ]
+        return [fn for name, fn in inspect.getmembers(cls, Action.is_action)]

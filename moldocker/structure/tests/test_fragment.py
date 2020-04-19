@@ -12,7 +12,7 @@ class TestFragment(ut.TestCase):
 
     def test_radical(self):
         frag = self.creator.get_fragment()
-        self.assertTrue(frag[0].species_string == 'X0+')
+        self.assertTrue(frag[0].species_string == "X0+")
 
     def test_small_frag(self):
         frag = self.fragments[10]
@@ -21,6 +21,7 @@ class TestFragment(ut.TestCase):
     def test_all_fragments(self):
         for idx, frag in enumerate(self.fragments):
             newfrag = FragmentCreator(frag.copy()).get_fragment()
+
 
 if __name__ == "__main__":
     ut.main()

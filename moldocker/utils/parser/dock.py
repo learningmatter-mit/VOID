@@ -1,6 +1,7 @@
 from .base import Parser
 from moldocker import dockers, samplers, fitness
 
+
 class DockParser(Parser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

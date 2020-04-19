@@ -19,4 +19,3 @@ class MonteCarloDocker(Metropolis):
     def rotate(self, cpx):
         cpx.guest_transform.rotate()
         return cpx
-

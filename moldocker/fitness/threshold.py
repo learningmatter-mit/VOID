@@ -4,13 +4,13 @@ from .base import Fitness
 
 
 THRESHOLD = 1.5
-DEFAULT_STRUCTURE = 'complex'
-STRUCTURE_CHOICES = ['complex', 'guest', 'host']
+DEFAULT_STRUCTURE = "complex"
+STRUCTURE_CHOICES = ["complex", "guest", "host"]
 DEFAULT_STEP = False
 
 
 class ThresholdFitness(Fitness):
-    def __init__(self, threshold=THRESHOLD, structure='complex', step=False, **kwargs):
+    def __init__(self, threshold=THRESHOLD, structure="complex", step=False, **kwargs):
         """Fitness is positive if the minimum distance is above
             the given threshold.
 
@@ -24,7 +24,9 @@ class ThresholdFitness(Fitness):
         self.step = step
 
         if structure not in STRUCTURE_CHOICES:
-            raise ValueError("structure has to be one of: {}".format(', '.join(STRUCTURE_CHOICES)))
+            raise ValueError(
+                "structure has to be one of: {}".format(", ".join(STRUCTURE_CHOICES))
+            )
         self.structure = structure
 
     @staticmethod
@@ -44,16 +46,16 @@ class ThresholdFitness(Fitness):
         )
 
     def get_distances(self, complex):
-        if self.structure == 'complex':
+        if self.structure == "complex":
             return complex.distance_matrix
 
-        elif self.structure == 'host':
+        elif self.structure == "host":
             idx = np.triu_indices(len(complex.host), k=1)
-            return complex.get_distance_matrix('host')[idx]
+            return complex.get_distance_matrix("host")[idx]
 
-        elif self.structure == 'guest':
+        elif self.structure == "guest":
             idx = np.triu_indices(len(complex.guest), k=1)
-            return complex.get_distance_matrix('guest')[idx]
+            return complex.get_distance_matrix("guest")[idx]
 
         else:
             raise ValueError("structure type not supported")
@@ -77,7 +79,9 @@ class MeanDistanceFitness(ThresholdFitness):
     HELP = "Complexes have positive score if the mean distance between host and guest is above the given threshold"
 
     def __call__(self, complex, axis=-1):
-        return self.normalize(self.get_distances(complex).min(axis=axis).mean() - self.threshold)
+        return self.normalize(
+            self.get_distances(complex).min(axis=axis).mean() - self.threshold
+        )
 
 
 class SumInvDistanceFitness(ThresholdFitness):

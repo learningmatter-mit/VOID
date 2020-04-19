@@ -27,10 +27,7 @@ class TestMetropolis(ut.TestCase):
         self.num_steps = 10
         self.num_loops = 20
         self.temperature = 1
-        self.mcarlo = ExampleMetropolis(
-            self.fitness,
-            temperature=self.temperature
-        )
+        self.mcarlo = ExampleMetropolis(self.fitness, temperature=self.temperature)
 
     def test_actions(self):
         self.assertEqual(len(self.mcarlo.get_actions()), 2)
@@ -44,8 +41,7 @@ class TestMetropolis(ut.TestCase):
     def test_loopmc(self):
         initial = 0
         values = [
-            self.mcarlo.run(initial, self.num_steps)
-            for _ in range(self.num_loops)
+            self.mcarlo.run(initial, self.num_steps) for _ in range(self.num_loops)
         ]
 
         self.assertTrue(np.mean(values) > 0)

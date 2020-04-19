@@ -54,12 +54,14 @@ class TestTransformer(ut.TestCase):
         if np.allclose(newguest.cart_coords[methyl], oldguest.cart_coords[methyl]):
             oldcoords = oldguest.cart_coords[remaining] - anchor
             newcoords = newguest.cart_coords[remaining] - anchor
-        elif np.allclose(newguest.cart_coords[remaining], oldguest.cart_coords[remaining]): 
+        elif np.allclose(
+            newguest.cart_coords[remaining], oldguest.cart_coords[remaining]
+        ):
             oldcoords = oldguest.cart_coords[methyl] - anchor
             newcoords = newguest.cart_coords[methyl] - anchor
         else:
             raise AssertionError("both fragments of the molecule were changed!")
-        
+
         rot = rotation_matrix(axis, theta)
         rotcoords = oldcoords @ rot.T
         self.assertTrue(np.allclose(newcoords, rotcoords))
@@ -80,9 +82,7 @@ class TestTransformer(ut.TestCase):
         self.transformer.substitute(frag)
         coordination = nx.degree(self.transformer.molgraph.graph)
 
-        self.assertTrue(all([
-            deg <= 4 for deg in dict(coordination).values()
-        ]))
+        self.assertTrue(all([deg <= 4 for deg in dict(coordination).values()]))
 
 
 if __name__ == "__main__":

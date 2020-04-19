@@ -1,6 +1,7 @@
 import numpy as np
 from .mcmc import MarkovChainMC
 
+
 class Metropolis(MarkovChainMC):
     PARSER_NAME = "metropolis"
     HELP = "Try different actions onto a given object to maximize the given fitness using the Metropolis-Hastings algorithm"
@@ -19,7 +20,7 @@ class Metropolis(MarkovChainMC):
         if profile is None:
             return lambda step: self.temperature
 
-        assert hasattr(profile, '__call__'), "Temperature profile is not callable"
+        assert hasattr(profile, "__call__"), "Temperature profile is not callable"
         return profile
 
     def accept(self, new, old):

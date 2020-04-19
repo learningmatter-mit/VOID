@@ -3,7 +3,7 @@ from pymatgen.core import Molecule
 
 
 class FragmentCreator:
-    RADICAL_SPECIES = 'X0+'
+    RADICAL_SPECIES = "X0+"
     NBR_RADIUS = 2
 
     def __init__(self, frag):
@@ -22,10 +22,12 @@ class FragmentCreator:
         return atom.species_string == species
 
     def is_fragment_formatted(self):
-        return self.is_species(self.frag[0], self.RADICAL_SPECIES) and self.is_neighbor(self.frag[0], self.frag[1])
+        return self.is_species(self.frag[0], self.RADICAL_SPECIES) and self.is_neighbor(
+            self.frag[0], self.frag[1]
+        )
 
     def sample_terminal_atom(self):
-        hydrogens = [at for at in self.frag if self.is_species(at, 'H')]
+        hydrogens = [at for at in self.frag if self.is_species(at, "H")]
         return random.sample(hydrogens, 1)[0]
 
     def create_radical(self, atom=None):
@@ -35,7 +37,7 @@ class FragmentCreator:
         nearest_nbr = [
             nbr
             for nbr in self.frag.get_neighbors(atom, self.NBR_RADIUS)
-            if not self.is_species(nbr, 'H')
+            if not self.is_species(nbr, "H")
         ][0]
 
         self.frag.remove(atom)
@@ -55,4 +57,3 @@ class FragmentCreator:
             return self.frag
 
         return self.create_radical()
-

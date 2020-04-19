@@ -39,6 +39,5 @@ class TestComplex(ut.TestCase):
         self.assertEqual(len(self.complex.pose), 119)
 
 
-
 if __name__ == "__main__":
     ut.main()

@@ -20,8 +20,7 @@ class TestMCDocker(ut.TestCase):
         self.temperature = 0
 
         self.mcdocker = MonteCarloDocker(
-            fitness=self.fitness,
-            temperature=self.temperature
+            fitness=self.fitness, temperature=self.temperature
         )
 
     def test_examplemc(self):

@@ -7,6 +7,4 @@ class MultipleFitness(Fitness):
         self.weights = [1] * len(fitness) if weights is None else weights
 
     def __call__(self, obj):
-        return sum([
-            w * f(obj) for w, f in zip(self.weights, self.fitness)
-        ])
+        return sum([w * f(obj) for w, f in zip(self.weights, self.fitness)])

@@ -41,7 +41,7 @@ class TargetFitness(Fitness):
 
 class GaussianTargetFitness(TargetFitness):
     def metric(self, x):
-        return np.exp(-np.power(x, 2.) / (2 * np.power(self.tolerance, 2.)))
+        return np.exp(-np.power(x, 2.0) / (2 * np.power(self.tolerance, 2.0)))
 
 
 class MinDistanceGaussianTarget(GaussianTargetFitness):

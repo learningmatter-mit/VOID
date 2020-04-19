@@ -37,7 +37,9 @@ class TestMCMC(ut.TestCase):
     @ut.skip("this shows how to loop over many runs")
     def test_loopmc(self):
         initial = 0
-        values = [self.mcarlo.run(initial, self.num_steps) for _ in range(self.num_loops)]
+        values = [
+            self.mcarlo.run(initial, self.num_steps) for _ in range(self.num_loops)
+        ]
 
         self.assertTrue(np.abs(np.mean(values)) < 2)
 
