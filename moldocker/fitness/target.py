@@ -58,3 +58,11 @@ class MeanDistanceGaussianTarget(GaussianTargetFitness):
 
     def __call__(self, complex, axis=1):
         return self.metric(complex.distance_matrix.min(axis=axis).mean() - self.target)
+
+
+class MaxDistanceGaussianTarget(GaussianTargetFitness):
+    PARSER_NAME = "max_distance_target"
+    HELP = "Complexes have higher score if the max distance (Hausdorff distance) between host and guest is close to the given target"
+
+    def __call__(self, complex, axis=1):
+        return self.metric(complex.distance_matrix.min(axis=axis).max() - self.target)
