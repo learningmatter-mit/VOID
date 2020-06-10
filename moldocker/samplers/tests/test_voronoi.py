@@ -33,7 +33,8 @@ class TestVoronoi(ut.TestCase):
                 [-4.78300000e00, 9.84700000e00, 5.25440000e-04],
             ]
         )
-        self.assertIsNone(np.testing.assert_allclose(points, expected))
+        distances = np.linalg.norm(points[None, :, :] - expected[:, None, :], axis=-1)
+        self.assertTrue(all([np.abs(d) < 1e-5 for d in distances.min(axis=0)]))
 
 
 class TestVoronoiClustering(ut.TestCase):

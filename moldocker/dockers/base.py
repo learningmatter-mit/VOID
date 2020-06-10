@@ -1,6 +1,8 @@
 import numpy as np
+from typing import List
 from pymatgen.core import Structure, Molecule
 
+from moldocker.structure import Complex
 from moldocker.object import ParseableObject
 
 
@@ -50,7 +52,7 @@ class Docker(ParseableObject):
 
         return Molecule(species=self.guest.species, coords=newcoords,)
 
-    def dock(self, attempts):
+    def dock(self, attempts: int) -> List[Complex]:
         """Docks the guest into the host.
         """
         complexes = []

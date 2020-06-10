@@ -20,12 +20,18 @@ class TestMCDocker(ut.TestCase):
         self.temperature = 0
 
         self.mcdocker = MonteCarloDocker(
+            self.host, self.guest,
             fitness=self.fitness, temperature=self.temperature
         )
 
-    def test_examplemc(self):
+    def test_run(self):
         cpx = self.mcdocker.run(self.complex.copy(), self.num_steps)
         self.assertTrue(cpx.distance_matrix.min() > 1.5)
+
+    def test_dock(self):
+        cpxs = self.mcdocker.dock(self.num_steps)
+        self.assertIsInstance(cpxs, list)
+        self.assertIsInstance(cpxs[0], Complex)
 
 
 if __name__ == "__main__":
