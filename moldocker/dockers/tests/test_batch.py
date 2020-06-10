@@ -15,7 +15,7 @@ class TestBatch(ut.TestCase):
         self.sampler = OriginSampler()
         self.fitness = MinDistanceFitness(threshold=1.5)
         self.docker = BatchDocker(
-            self.host, self.guest, self.sampler, fitness_fn=self.fitness
+            self.host, self.guest, self.sampler, fitness=self.fitness
         )
 
     def test_rotate(self):

@@ -2,9 +2,10 @@ import numpy as np
 
 from moldocker.structure import Complex
 from moldocker.mcarlo import Metropolis, Action
+from .base import Docker
 
 
-class MonteCarloDocker(Metropolis):
+class MonteCarloDocker(Metropolis, Docker):
     PARSER_NAME = "mcdocker"
     HELP = "Repeats actions such as docking, translating and rotating the molecule until the metric is improved"
 

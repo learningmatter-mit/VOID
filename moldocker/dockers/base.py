@@ -15,11 +15,11 @@ class Docker(ParseableObject):
     PARSER_NAME = "base"
     HELP = "Base docker; does not implement any docking procedure"
 
-    def __init__(self, host, guest, sampler, fitness_fn, **kwargs):
+    def __init__(self, host, guest, sampler, fitness, **kwargs):
         self.host = host
         self.guest = guest
         self.sampler = sampler
-        self.fitness_fn = fitness_fn
+        self.fitness = fitness
 
     @staticmethod
     def add_arguments(parser):
@@ -32,7 +32,7 @@ class Docker(ParseableObject):
 
     def copy(self):
         return self.__class__(
-            self.host.copy(), self.guest.copy(), self.sampler, self.fitness_fn
+            self.host.copy(), self.guest.copy(), self.sampler, self.fitness
         )
 
     def new_host(self, newcoords=None):
@@ -67,7 +67,7 @@ class Docker(ParseableObject):
         raise NotImplementedError
 
     def rank_complexes(self, complexes):
-        fitnesses = [self.fitness_fn(cpx) for cpx in complexes]
-        ranking = sorted(zip(complexes, fitnesses), key=lambda x: x[1], reverse=True)
+        scores = [self.fitness(cpx) for cpx in complexes]
+        ranking = sorted(zip(complexes, scores), key=lambda x: x[1], reverse=True)
 
         return [cpx for cpx, fit in ranking if fit >= 0]
