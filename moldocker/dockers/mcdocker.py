@@ -30,10 +30,4 @@ class MonteCarloDocker(Metropolis):
         return [cpx]
 
     def copy(self):
-        return self.__class__(
-            self.host.copy(),
-            self.guest.copy(),
-            self.fitness,
-            self.temperature,
-            self.temperature_profile
-        )
+        return self.__class__(**self.__dict__.copy())

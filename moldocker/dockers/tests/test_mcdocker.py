@@ -33,6 +33,13 @@ class TestMCDocker(ut.TestCase):
         self.assertIsInstance(cpxs, list)
         self.assertIsInstance(cpxs[0], Complex)
 
+    def test_copy(self):
+        newdocker = self.mcdocker.copy()
+
+        self.assertEqual(newdocker.temperature, self.mcdocker.temperature)
+        self.assertEqual(newdocker.host, self.mcdocker.host)
+        self.assertEqual(newdocker.guest, self.mcdocker.guest)
+
 
 if __name__ == "__main__":
     ut.main()
