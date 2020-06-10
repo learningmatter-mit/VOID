@@ -33,8 +33,10 @@ class TestVoronoi(ut.TestCase):
                 [-4.78300000e00, 9.84700000e00, 5.25440000e-04],
             ]
         )
-        distances = np.linalg.norm(points[None, :, :] - expected[:, None, :], axis=-1)
-        self.assertTrue(all([np.abs(d) < 1e-5 for d in distances.min(axis=0)]))
+        fp = self.host.lattice.get_fractional_coords(points)
+        fe = self.host.lattice.get_fractional_coords(expected)
+        distances = self.host.lattice.get_all_distances(fp, fe)
+        self.assertTrue(all([np.abs(d) < 1e-3 for d in distances.min(axis=0)]))
 
 
 class TestVoronoiClustering(ut.TestCase):
