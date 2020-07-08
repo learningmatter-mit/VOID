@@ -2,7 +2,7 @@ import numpy as np
 
 from moldocker.structure import Complex
 from moldocker.mcarlo import Metropolis, Action
-from .base import Docker
+from moldocker.dockers import Docker
 
 
 class MonteCarloDocker(Metropolis, Docker):

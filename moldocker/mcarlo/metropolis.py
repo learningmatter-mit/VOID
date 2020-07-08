@@ -2,6 +2,10 @@ import numpy as np
 from .mcmc import MarkovChainMC
 
 
+TEMPERATURE = 0.1
+NUM_STEPS = 50
+
+
 class Metropolis(MarkovChainMC):
     PARSER_NAME = "metropolis"
     HELP = "Try different actions onto a given object to maximize the given fitness using the Metropolis-Hastings algorithm"
@@ -15,6 +19,22 @@ class Metropolis(MarkovChainMC):
         super().__init__(*args, **kwargs)
         self.temperature = temperature
         self.temperature_profile = self.set_temperature_profile(temperature_profile)
+
+    @staticmethod
+    def add_arguments(parser):
+        parser.add_argument(
+            "--num_steps",
+            type=int,
+            help="maximum number of Monte Carlo steps (default: %(default)s)",
+            default=NUM_STEPS,
+        )
+
+        parser.add_argument(
+            "--temperature",
+            type=float,
+            help="temperature of the calculation (default: %(default)s)",
+            default=TEMPERATURE,
+        )
 
     def set_temperature_profile(self, profile):
         if profile is None:
