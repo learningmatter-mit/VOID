@@ -34,5 +34,11 @@ class Grower(Metropolis):
     @Action
     def grow(self, cpx):
         frag = self.sample_fragment()
-        cpx.guest_transform.substitute(frag)
+
+        try:
+            cpx.guest_transform.substitute(frag)
+        except RuntimeError:
+            pass
+
         return cpx
+
