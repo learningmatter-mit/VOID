@@ -28,7 +28,7 @@ class MonteCarloDocker(Metropolis, Docker):
         cpx = Complex(self.host.copy(), self.guest.copy())
         cpx = self.run(cpx, attempts)
 
-        return [cpx]
+        return self.rank_complexes([cpx])
 
     def copy(self):
         return self.__class__(**self.__dict__.copy())
