@@ -1,5 +1,5 @@
 from .base import Parser
-from moldocker import dockers, samplers, fitness, mcarlo
+from moldocker import dockers, samplers, fitness
 
 
 class DockParser(Parser):
@@ -55,39 +55,6 @@ class DockParser(Parser):
             self.parser,
             self.docker_opts[options.docker],
             self.sampler_opts[options.sampler],
-            self.fitness_opts[options.fitness],
-        ]
-
-        if options.subdock:
-            parent_parsers.append(self.docker_opts["subdock"],)
-
-        return parent_parsers
-
-
-class MonteCarloDockParser(DockParser):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.docker_opts = self.get_dockers_parsers()
-        self.fitness_opts = self.get_fitness_parsers()
-
-    def get_samplers_parsers(self):
-        return None
-
-    def get_dockers_parsers(self):
-        parsers = self.get_module_parsers(mcarlo)
-        self.parser.add_argument(
-            "-d",
-            "--docker",
-            type=str,
-            help="Docker to be used",
-            choices=list(parsers.keys()),
-        )
-        return parsers
-
-    def get_parent_parsers(self, options):
-        parent_parsers = [
-            self.parser,
-            self.docker_opts[options.docker],
             self.fitness_opts[options.fitness],
         ]
 

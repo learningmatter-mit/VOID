@@ -1,7 +1,7 @@
 import os
 import json
 from pymatgen.core import Structure, Molecule
-from moldocker import dockers, samplers, fitness, mcarlo
+from moldocker import dockers, samplers, fitness
 
 
 class SetupRun:
@@ -11,6 +11,16 @@ class SetupRun:
     def get_module_classes(self, module):
         return {cls.PARSER_NAME: cls for cls in module.__all__}
 
+    def get_docker_kwargs(self):
+        if self.args["docker"] == "mcdocker":
+            return {
+                k: self.args[k]
+                for k in ["temperature", "temperature_profile"]
+                if k in self.args
+            }
+
+        return {}
+
     def get_docker(self):
         classes = self.get_module_classes(dockers)
         cls = classes[self.args["docker"]]
@@ -19,7 +29,13 @@ class SetupRun:
         fitness = self.get_fitness()
         host, guest = self.get_structures()
 
-        docker = cls(host, guest, sampler, fitness)
+        docker = cls(
+            host=host,
+            guest=guest,
+            sampler=sampler,
+            fitness=fitness,
+            **self.get_docker_kwargs()
+        )
 
         return docker
 
@@ -55,19 +71,3 @@ class SetupRun:
         path = os.path.join(self.args["output"], "args.json")
         with open(path, "w") as f:
             json.dump(self.args, f, indent=4)
-
-
-class SetupMonteCarloRun(SetupRun):
-    def get_docker_kwargs(self):
-        kwargs = ["temperature", "temperature_profile", "num_steps"
-    def get_docker(self):
-        classes = self.get_module_classes(mcarlo)
-        cls = classes[self.args["docker"]]
-
-        sampler = self.get_sampler()
-        fitness = self.get_fitness()
-        host, guest = self.get_structures()
-
-        docker = cls(host, guest, sampler, fitness, **self.get_docker_kwargs)
-
-        return docker

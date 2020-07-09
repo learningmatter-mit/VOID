@@ -52,5 +52,30 @@ class TestSetup(ut.TestCase):
         self.assertIsInstance(subdocker, dockers.Subdocker)
 
 
+class TestSetupMonteCarlo(ut.TestCase):
+    def setUp(self):
+        host_file = os.path.join(thisdir, "../../tests/files/AFI.cif")
+        guest_file = os.path.join(thisdir, "../../tests/files/molecule.xyz")
+
+        args = Namespace(
+            **dict(
+                input=[host_file, guest_file],
+                docker="mcdocker",
+                sampler="voronoi_cluster",
+                fitness="min_distance",
+                subdock=True,
+                max_subdock=1,
+                temperature=0.1
+            )
+        )
+
+        self.setup = SetupRun(args)
+
+    def test_docker(self):
+        docker = self.setup.get_docker()
+        self.assertIsInstance(docker, dockers.MonteCarloDocker)
+
+
+
 if __name__ == "__main__":
     ut.main()
