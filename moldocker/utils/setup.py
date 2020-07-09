@@ -1,7 +1,7 @@
 import os
 import json
 from pymatgen.core import Structure, Molecule
-from moldocker import dockers, samplers, fitness
+from moldocker import dockers, samplers, fitness, mcarlo
 
 
 class SetupRun:
@@ -55,3 +55,17 @@ class SetupRun:
         path = os.path.join(self.args["output"], "args.json")
         with open(path, "w") as f:
             json.dump(self.args, f, indent=4)
+
+
+class SetupMonteCarloRun(SetupRun):
+    def get_docker(self):
+        classes = self.get_module_classes(mcarlo)
+        cls = classes[self.args["docker"]]
+
+        sampler = self.get_sampler()
+        fitness = self.get_fitness()
+        host, guest = self.get_structures()
+
+        docker = cls(host, guest, sampler, fitness)
+
+        return docker

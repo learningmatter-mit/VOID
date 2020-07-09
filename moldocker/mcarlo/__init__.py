@@ -4,4 +4,4 @@ from .metropolis import Metropolis
 from .grower import Grower
 from .mcdocker import MonteCarloDocker
 
-__all__ = [Grower, MonteCarloDocker]
+__all__ = [MonteCarloDocker]
