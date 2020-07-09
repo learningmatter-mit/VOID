@@ -58,6 +58,8 @@ class SetupRun:
 
 
 class SetupMonteCarloRun(SetupRun):
+    def get_docker_kwargs(self):
+        kwargs = ["temperature", "temperature_profile", "num_steps"
     def get_docker(self):
         classes = self.get_module_classes(mcarlo)
         cls = classes[self.args["docker"]]
@@ -66,6 +68,6 @@ class SetupMonteCarloRun(SetupRun):
         fitness = self.get_fitness()
         host, guest = self.get_structures()
 
-        docker = cls(host, guest, sampler, fitness)
+        docker = cls(host, guest, sampler, fitness, **self.get_docker_kwargs)
 
         return docker

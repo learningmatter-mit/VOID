@@ -2,7 +2,7 @@ import numpy as np
 import unittest as ut
 
 from moldocker.structure import Complex
-from moldocker.mcarlo import MonteCarloDocker
+from moldocker.dockers import MonteCarloDocker
 from moldocker.samplers import OriginSampler
 from moldocker.fitness import MinDistanceFitness
 

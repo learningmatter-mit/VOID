@@ -3,7 +3,7 @@ from .mcmc import MarkovChainMC
 
 
 TEMPERATURE = 0.1
-NUM_STEPS = 50
+ATTEMPTS = 200
 
 
 class Metropolis(MarkovChainMC):
@@ -23,10 +23,10 @@ class Metropolis(MarkovChainMC):
     @staticmethod
     def add_arguments(parser):
         parser.add_argument(
-            "--num_steps",
+            "--attempts",
             type=int,
             help="maximum number of Monte Carlo steps (default: %(default)s)",
-            default=NUM_STEPS,
+            default=ATTEMPTS,
         )
 
         parser.add_argument(
