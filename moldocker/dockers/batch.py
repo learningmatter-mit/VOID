@@ -32,8 +32,9 @@ class BatchDocker(Docker):
         guest_batch = self.rotate_guest(attempts)
 
         complexes = [
-            Complex(self.new_host(newcoords=hcoords), self.new_guest(newcoords=gcoords))
+            self.create_new_complex(hcoords, gcoords)
             for hcoords, gcoords in zip(host_batch, guest_batch)
         ]
 
         return complexes
+

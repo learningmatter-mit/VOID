@@ -52,6 +52,13 @@ class Docker(ParseableObject):
 
         return Molecule(species=self.guest.species, coords=newcoords,)
 
+    def create_new_complex(self, host_coords, guest_coords):
+        return Complex(
+            self.new_host(newcoords=host_coords),
+            self.new_guest(newcoords=guest_coords),
+            add_transform=False
+        )
+
     def dock(self, attempts: int) -> List[Complex]:
         """Docks the guest into the host.
         """

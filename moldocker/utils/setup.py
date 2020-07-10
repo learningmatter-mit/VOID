@@ -11,8 +11,8 @@ class SetupRun:
     def get_module_classes(self, module):
         return {cls.PARSER_NAME: cls for cls in module.__all__}
 
-    def get_docker_kwargs(self):
-        if self.args["docker"] == "mcdocker":
+    def get_docker_kwargs(self, docker_class):
+        if self.args["docker"] in ["mcdocker", "mcsuccess"]:
             return {
                 k: self.args[k]
                 for k in ["temperature", "temperature_profile"]
@@ -34,7 +34,7 @@ class SetupRun:
             guest=guest,
             sampler=sampler,
             fitness=fitness,
-            **self.get_docker_kwargs()
+            **self.get_docker_kwargs(cls)
         )
 
         return docker

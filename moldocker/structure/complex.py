@@ -7,18 +7,20 @@ from moldocker.utils.geometry import random_rotation_matrices
 
 class Complex:
     def __init__(
-        self, host, guest,
+        self, host, guest, add_transform=True
     ):
         """Constructor for host-guest pair. The `guest_transform` is useful to perform operations on the molecule. It performs all changes in place, meaning that the MoleculeTransformer has to have access to the reference of `self.guest` in order to be effective.
 
         Args:
             host (Structure)
             guest (Molecule)
+            add_transform (bool): if True, create a MoleculeTransformer to apply
+                operations to the guest
         """
 
         self.host = host
         self.guest = guest
-        self.guest_transform = MoleculeTransformer(self.guest)
+        self.guest_transform = MoleculeTransformer(self.guest) if add_transform else None
 
     def __len__(self):
         return len(self.host) + len(self.guest)
