@@ -10,7 +10,7 @@ TOLERANCE = 0.2
 class TargetFitness(Fitness):
     """Fitness function that optimizes a target property"""
 
-    def __init__(self, target=TARGET, tolerance=TOLERANCE):
+    def __init__(self, target=TARGET, tolerance=TOLERANCE, **kwargs):
         """
         Args:
             target (float): target value for the property

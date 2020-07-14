@@ -15,7 +15,7 @@ from moldocker.io.stdout import suppress_stdout
 
 PROBE_RADIUS = 0.1
 MIN_VORONOI_RADIUS = 3.0
-REMOVE_SPECIES = ["O"]
+REMOVE_SPECIES = []
 NUM_CLUSTERS = 10
 
 
