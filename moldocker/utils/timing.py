@@ -1,5 +1,6 @@
 from timeit import default_timer as timer
 
+
 def time_fn(fn):
     def wrapped(*args, **kwargs):
         start = timer()
