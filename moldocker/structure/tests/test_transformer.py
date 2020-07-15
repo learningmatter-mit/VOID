@@ -1,15 +1,14 @@
 import numpy as np
 import unittest as ut
 
-from moldocker.structure import MoleculeTransformer, FragmentCreator
+from moldocker.structure import MoleculeTransformer
 from moldocker.utils.geometry import rotation_matrix
-from moldocker.tests.test_inputs import load_molecule, load_fragments
+from moldocker.tests.test_inputs import load_molecule
 
 
 class TestTransformer(ut.TestCase):
     def setUp(self):
         self.guest = load_molecule()
-        self.fragments = load_fragments()
         self.transformer = MoleculeTransformer(self.guest.copy())
         self.smallguest = load_molecule("ammonium.xyz")
 
@@ -73,17 +72,6 @@ class TestTransformer(ut.TestCase):
             newguest = self.transformer.twist_bond()
         except ValueError:
             self.fail("error while twisting the bond of a small molecule")
-
-    def test_substitute(self):
-        import networkx as nx
-
-        frag = self.fragments[3]
-        frag = FragmentCreator(frag).get_fragment()
-
-        self.transformer.substitute(frag)
-        coordination = nx.degree(self.transformer.molgraph.graph)
-
-        self.assertTrue(all([deg <= 4 for deg in dict(coordination).values()]))
 
 
 if __name__ == "__main__":

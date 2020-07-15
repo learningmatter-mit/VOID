@@ -9,7 +9,7 @@ class TestVoronoi(ut.TestCase):
     def setUp(self):
         self.host = load_structure()
         self.guest = load_molecule()
-        self.sampler = VoronoiSampler()
+        self.sampler = VoronoiSampler(remove_species=["O"])
 
     def test_points(self):
         points = self.sampler.get_points(self.host)
