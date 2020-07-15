@@ -18,7 +18,7 @@ setup(
     packages=find_packages("."),
     scripts=["scripts/dock.py",],
     python_requires=">=3.5",
-    install_requires=["numpy", "networkx", "pymatgen>=2020.3.2",],
+    install_requires=["numpy", "networkx", "pymatgen>=2020.3.2", "scikit-learn"],
     license="MIT",
     description="Tools to dock molecules to crystal structures",
     long_description=read("README.md"),
