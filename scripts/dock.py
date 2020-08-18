@@ -2,9 +2,9 @@
 import os
 import logging
 
-from moldocker.utils.parser import DockParser
-from moldocker.utils.setup import SetupRun
-from moldocker.io.cif import write_cif
+from VOID.utils.parser import DockParser
+from VOID.utils.setup import SetupRun
+from VOID.io.cif import write_cif
 
 
 if __name__ == "__main__":

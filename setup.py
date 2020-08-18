@@ -10,16 +10,16 @@ def read(fname):
 
 
 setup(
-    name="moldocker",
+    name="VOID",
     version="1.0.0",
     author="Daniel Schwalbe-Koda",
     email="dskoda@mit.edu",
-    url="https://github.com/dskoda/moldocker",
+    url="https://github.com/learningmatter-mit/VOID",
     packages=find_packages("."),
     scripts=["scripts/dock.py",],
     python_requires=">=3.5",
     install_requires=["numpy", "networkx", "pymatgen>=2020.3.2", "scikit-learn"],
     license="MIT",
-    description="Tools to dock molecules to crystal structures",
+    description="Voronoi Organic-Inorganic Docking",
     long_description=read("README.md"),
 )
