@@ -1,6 +1,6 @@
-# Molecular Docking Tool
+# VOID: Voronoi Organic-Inorganic Docker
 
-The Molecular Docking Tool (`moldocker`) is a software designed to create conformations of molecules docked inside crystal structures. The package provides a library and scripts that include:
+The VOID: Voronoi Organic-Inorganic Docker package (`VOID`) is a software designed to create conformations of molecules docked inside crystal structures. The package provides a library and scripts that include:
  - Sampling of the space using Voronoi diagrams
  - Geometrical fitness functions
  - Batched docking using tensorial operations
@@ -16,16 +16,16 @@ This software requires the following packages:
 
 ```bash
 conda upgrade conda
-conda create -n moldocker python=3.7 numpy networkx pymatgen>=2020.3.2 scikit-learn -c conda-forge
+conda create -n VOID python=3.7 numpy networkx pymatgen>=2020.3.2 scikit-learn -c conda-forge
 ```
 
-You need to activate the `moldocker` environment to install the `moldocker` package:
+You need to activate the `VOID` environment to install the `VOID` package:
 
 ```bash
-conda activate moldocker
+conda activate VOID
 ```
 
-Finally, install the `moldocker` package by running:
+Finally, install the `VOID` package by running:
 
 ```bash
 pip install .
@@ -38,10 +38,10 @@ Zeo++ and its interface to pymatgen are required to use the Voronoi sampler. Ple
 ## Usage
 
 ### Command line
-The simplest way to use the `moldocker` package is to use the premade script `dock.py` (in the `scripts`) folder. As an example, we provide a molecule and a zeolite in [moldocker/tests/files](moldocker/tests/files). With `moldocker` installed, you can dock the molecule to the zeolite using the following command:
+The simplest way to use the `VOID` package is to use the premade script `dock.py` (in the `scripts`) folder. As an example, we provide a molecule and a zeolite in [VOID/tests/files](VOID/tests/files). With `VOID` installed, you can dock the molecule to the zeolite using the following command:
 
 ```bash
-dock.py moldocker/tests/files/{AFI.cif,molecule.xyz} -o ~/Desktop/docked -d batch -s voronoi_cluster -f min_distance
+dock.py VOID/tests/files/{AFI.cif,molecule.xyz} -o ~/Desktop/docked -d batch -s voronoi_cluster -f min_distance
 ```
 
 This will dock the molecule contained in `molecule.xyz` to the zeolite in `AFI.cif` using the batch docker, Voronoi sampler with predefined number of clusters and a fitness function that considers the minimum distance between the host and the guest. All output files are saved in the folder `~/Desktop/docked`. All input files for crystals and molecules supported by pymatgen can be given as inputs, including [xyz, Gaussian inputs and outputs for molecules](https://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IMolecule.from_file) and [CIF, VASP inputs and outputs, CSSR and others for crystals](https://pymatgen.org/pymatgen.core.structure.html#pymatgen.core.structure.IStructure.from_file).

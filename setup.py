@@ -20,6 +20,6 @@ setup(
     python_requires=">=3.5",
     install_requires=["numpy", "networkx", "pymatgen>=2020.3.2", "scikit-learn"],
     license="MIT",
-    description="Voronoi Organic-Inorganic Docking",
+    description="Voronoi Organic-Inorganic Docker",
     long_description=read("README.md"),
 )
