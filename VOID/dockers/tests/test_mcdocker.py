@@ -17,7 +17,7 @@ class TestMCDocker(ut.TestCase):
         self.fitness = MinDistanceFitness(threshold=1.5)
 
         self.num_steps = 100
-        self.temperature = 0
+        self.temperature = 0.1
 
         self.mcdocker = MonteCarloDocker(
             self.host, self.guest,

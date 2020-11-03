@@ -32,3 +32,11 @@ class MonteCarloDocker(Metropolis, Docker):
 
     def copy(self):
         return self.__class__(**self.__dict__.copy())
+
+    def on_start(self, cpx):
+        v = np.random.rand(1, 3)
+        lattice = cpx.host.lattice.matrix
+        translation = (v @ lattice).reshape(-1)
+
+        cpx.guest_transform.translate(translation)
+        return cpx
