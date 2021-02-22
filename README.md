@@ -35,6 +35,14 @@ pip install .
 
 Zeo++ and its interface to pymatgen are required to use the Voronoi sampler. Please follow the instructions at the [pymatgen documentation](https://pymatgen.org/pymatgen.io.zeopp.html#zeo-installation-steps) to install both accordingly.
 
+The compilation steps described in the link above have been reproduced using the conda environment from the previous section, as well as using the following package versions:
+
+- gcc 7.5.0
+- python 3.6.8 on a conda 4.7.12 environment
+- cython 0.29.5
+
+Please note that there may be differences between the Zeo++ code in the subversion repository and the stable version available for download in [this link](http://www.maciejharanczyk.info/Zeopp/). The code compiles normally when downloading Zeo++ with `svn checkout https://code.lbl.gov/svn/zeo/trunk --username anonsvn`, as described in the `pymatgen` documentation. If you have problems compiling this library, please try contacting the Zeo++ developers.
+
 ## Usage
 
 ### Command line
