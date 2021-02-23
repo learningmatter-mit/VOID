@@ -16,7 +16,7 @@ This software requires the following packages:
 
 ```bash
 conda upgrade conda
-conda create -n VOID python=3.7 numpy networkx pymatgen>=2020.3.2 scikit-learn -c conda-forge
+conda create -n VOID python=3.7 numpy networkx pymatgen scikit-learn -c conda-forge
 ```
 
 You need to activate the `VOID` environment to install the `VOID` package:
@@ -41,7 +41,23 @@ The compilation steps described in the link above have been reproduced using the
 - python 3.6.8 on a conda 4.7.12 environment
 - cython 0.29.5
 
-Please note that there may be differences between the Zeo++ code in the subversion repository and the stable version available for download in [this link](http://www.maciejharanczyk.info/Zeopp/). The code compiles normally when downloading Zeo++ with `svn checkout https://code.lbl.gov/svn/zeo/trunk --username anonsvn`, as described in the `pymatgen` documentation. If you have problems compiling this library, please try contacting the Zeo++ developers.
+Please note that there may be differences between the Zeo++ code in the subversion repository and the stable version available for download in [this link](http://www.maciejharanczyk.info/Zeopp/). The code compiles normally when downloading Zeo++ with `svn checkout https://code.lbl.gov/svn/zeo/trunk --username anonsvn`, as described in the `pymatgen` documentation.
+
+Additionally, Zeo++ code expects the following tree structure:
+
+```
+.
+├── Voro++
+│   └── voro
+│       └── trunk
+└── Zeo++
+    └── zeo
+        └── trunk
+```
+
+When checking out the original conde using subversion, you can either move the folders to have that tree structure, or edit `Zeo++/zeo/trunk/Makefile` to include the correct paths in `VOROINCLDIR` and `VOROLINKDIR`.
+
+If you have problems compiling this library, please try contacting the Zeo++ developers.
 
 ## Usage
 
