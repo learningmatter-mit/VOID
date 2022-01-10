@@ -16,48 +16,51 @@ This software requires the following packages:
 
 ```bash
 conda upgrade conda
-conda create -n VOID python=3.7 numpy networkx pymatgen scikit-learn -c conda-forge
+conda create --name VOID python=3.6.8 cython=0.29.5
 ```
 
-You need to activate the `VOID` environment to install the `VOID` package:
+You need to activate the `VOID` environment to install the dependencies for the `VOID` package and the package itself:
 
 ```bash
 conda activate VOID
 ```
 
-Finally, install the `VOID` package by running:
+### Zeo++ dependency
+
+Zeo++ and its interface to pymatgen are required to use the Voronoi sampler. The following instructions for their installation are based off the original instructions at the [pymatgen documentation](https://pymatgen.org/pymatgen.io.zeopp.html#zeo-installation-steps). 
+
+The original code retrieval with  `svn checkout –username anonsvn https://code.lbl.gov/svn/voro/trunk` (password anonsvn) no longer works. Instead, use these repositories for [Voro++](https://github.com/chr1shr/voro) and [Zeo++](https://github.com/richardjgowers/zeoplusplus). 
+
+```bash
+git clone <insert HTTPS link>
+```
+
+Please note that there may be differences between the Zeo++ code in the Github repository and the stable version available for download in [this link](http://www.maciejharanczyk.info/Zeopp/). 
+
+After retrieving the code, make the following edits to the Makefiles and config.mk files to point the code towards the correct directory paths (reading all the Makefiles and config.mk files in both packages is highly recommended for understanding of the installation process).
+
+Add `-fPIC` to CFLAGS in `config.mk` in the Voro++ directory. Also, if you do not have permissions to access the default `PREFIX` path, change it to your desired directory.
+
+Run these commands:
+
+```bash
+make
+make install
+```
+
+You should notice the creation of several folders in the `PREFIX` directory you specified earlier. Edit the Makefile in the Zeo++ directory to include the correct paths in `VOROINCLDIR` and `VOROLINKDIR`. 
+
+Run `make dylib` within the Zeo++ directory.
+
+Navigate to `cython_wrapper/` in the Zeo++ directory and edit `setup_alt.py` to point the variables `includedirs` and `libdirs` to the correct Voro++ directory. Run `python setup_alt.py develop` to install Zeo++ python bindings.
+
+If you have problems compiling this library, please try contacting the Zeo++ developers.
+
+Finally, install the `VOID` package by navigating to the VOID directory and running:
 
 ```bash
 pip install .
 ```
-
-### Zeo++ dependency
-
-Zeo++ and its interface to pymatgen are required to use the Voronoi sampler. Please follow the instructions at the [pymatgen documentation](https://pymatgen.org/pymatgen.io.zeopp.html#zeo-installation-steps) to install both accordingly.
-
-The compilation steps described in the link above have been reproduced using the conda environment from the previous section, as well as using the following package versions:
-
-- gcc 7.5.0
-- python 3.6.8 on a conda 4.7.12 environment
-- cython 0.29.5
-
-Please note that there may be differences between the Zeo++ code in the subversion repository and the stable version available for download in [this link](http://www.maciejharanczyk.info/Zeopp/). The code compiles normally when downloading Zeo++ with `svn checkout https://code.lbl.gov/svn/zeo/trunk --username anonsvn`, as described in the `pymatgen` documentation.
-
-Additionally, Zeo++ code expects the following tree structure:
-
-```
-.
-├── Voro++
-│   └── voro
-│       └── trunk
-└── Zeo++
-    └── zeo
-        └── trunk
-```
-
-When checking out the original conde using subversion, you can either move the folders to have that tree structure, or edit `Zeo++/zeo/trunk/Makefile` to include the correct paths in `VOROINCLDIR` and `VOROLINKDIR`.
-
-If you have problems compiling this library, please try contacting the Zeo++ developers.
 
 ## Usage
 
