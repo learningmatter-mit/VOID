@@ -29,10 +29,11 @@ conda activate VOID
 
 Zeo++ and its interface to pymatgen are required to use the Voronoi sampler. The following instructions for their installation are based off the original instructions at the [pymatgen documentation](https://pymatgen.org/pymatgen.io.zeopp.html#zeo-installation-steps). 
 
-The original code retrieval with  `svn checkout –username anonsvn https://code.lbl.gov/svn/voro/trunk` (password anonsvn) no longer works. Instead, use these repositories for [Voro++](https://github.com/chr1shr/voro) and [Zeo++](https://github.com/richardjgowers/zeoplusplus). 
+The original code retrieval with  `svn checkout –username anonsvn https://code.lbl.gov/svn/voro/trunk` (password anonsvn) no longer works. Instead, we suggest using these mirrors for [Voro++](https://github.com/chr1shr/voro) and [Zeo++](https://github.com/richardjgowers/zeoplusplus):
 
 ```bash
-git clone <insert HTTPS link>
+git clone https://github.com/chr1shr/voro.git
+git clone https://github.com/richardjgowers/zeoplusplus.git
 ```
 
 Please note that there may be differences between the Zeo++ code in the Github repository and the stable version available for download in [this link](http://www.maciejharanczyk.info/Zeopp/). 
@@ -54,7 +55,7 @@ Run `make dylib` within the Zeo++ directory.
 
 Navigate to `cython_wrapper/` in the Zeo++ directory and edit `setup_alt.py` to point the variables `includedirs` and `libdirs` to the correct Voro++ directory. Run `python setup_alt.py develop` to install Zeo++ python bindings.
 
-If you have problems compiling this library, please try contacting the Zeo++ developers.
+If you have problems compiling this library, please try contacting the Zeo++ developers. We do not offer support for compilation of Zeo++, Voro++ or other dependencies.
 
 Finally, install the `VOID` package by navigating to the VOID directory and running:
 
@@ -82,3 +83,25 @@ Further examples can be seen in the [examples](examples/README.md) folder.
 ## Nomenclature
 
 The nomenclature of the variables in this software follows (mostly) the [traditional molecular docking terminology](https://en.wikipedia.org/wiki/Docking_(molecular))
+
+## Citing
+
+The publication describing the algorithm and the software is the following:
+
+
+D. Schwalbe-Koda and R. Gómez-Bombarelli. _J. Phys. Chem. C_ **125** (5), 3009–3017 (2021). DOI [10.1021/acs.jpcc.0c10108](https://doi.org/10.1021/acs.jpcc.0c10108)
+
+If you use this software, please cite the paper above. The bibtex for the citation is the following:
+
+```
+@article{schwalbe2021supramolecular,
+  title={Supramolecular recognition in crystalline nanocavities through Monte Carlo and Voronoi network algorithms},
+  author={Schwalbe-Koda, Daniel and G{\'o}mez-Bombarelli, Rafael},
+  journal={The Journal of Physical Chemistry C},
+  volume={125},
+  number={5},
+  pages={3009--3017},
+  year={2021},
+  publisher={ACS Publications}
+}
+```
