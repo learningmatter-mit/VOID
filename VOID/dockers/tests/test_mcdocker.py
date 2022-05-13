@@ -16,7 +16,7 @@ class TestMCDocker(ut.TestCase):
         self.complex = Complex(self.host, self.guest)
         self.fitness = MinDistanceFitness(threshold=1.5)
 
-        self.num_steps = 100
+        self.num_steps = 200
         self.temperature = 0.1
 
         self.mcdocker = MonteCarloDocker(
@@ -25,10 +25,12 @@ class TestMCDocker(ut.TestCase):
         )
 
     def test_run(self):
+        np.random.seed(28)
         cpx = self.mcdocker.run(self.complex.copy(), self.num_steps)
         self.assertTrue(cpx.distance_matrix.min() > 1.5)
 
     def test_dock(self):
+        np.random.seed(7)
         cpxs = self.mcdocker.dock(self.num_steps)
         self.assertIsInstance(cpxs, list)
         self.assertIsInstance(cpxs[0], Complex)
