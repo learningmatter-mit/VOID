@@ -63,7 +63,14 @@ class ThresholdFitness(Fitness):
             raise ValueError("structure type not supported")
 
     def get_atomtypes_indexes(self, pose):
-        """Collect all the atomtypes indexes in the structure."""
+        """Collect all the atomtypes indexes in the structure
+
+        Args:
+            pose (structure): Structure object containing atomtype, xyz, and host/guest features
+
+        Returns:
+            atomtypes_indexes (dict): dictionary comprising information about each atomtype, its indexes and the "host"/"guest" nature
+        """
         atomtypes_indexes = {}
 
         for index, site in enumerate(pose):
@@ -76,8 +83,20 @@ class ThresholdFitness(Fitness):
         return atomtypes_indexes
 
     def find_cation_index(self, distance_matrices, atomtypes_indexes):
-        """Identify the cation position in the guest."""
+        """Identify the cation position in the guest molecule. This function is intended for monocationic species.
 
+        Args:
+            distance_matrices (list): List of distance matrix lists for each atom with respect to all other atoms.
+            atomtypes_indexes (dict): Dictionary comprising information about each atomtype, its indexes, and its "host"/"guest" nature.
+
+        Raises:
+            ValueError: If the code cannot find the cation on the guest molecule.
+
+        Returns:
+            int: Index corresponding to the carbon (C) or nitrogen (N) atom that hosts the positive charge on the molecule.
+        """
+
+        # First retrieves the indexes for each atomtype, more can be added if needed
         carbon_indexes = [
             idx for idx, lbl in atomtypes_indexes.get("C", []) if lbl == "guest"
         ]
@@ -90,8 +109,11 @@ class ThresholdFitness(Fitness):
         hydrogen_indexes = [
             idx for idx, lbl in atomtypes_indexes.get("H", []) if lbl == "guest"
         ]
+
+        # Checks the numbers of bonds for each C atom, takes into account double and triple bonds
         for carbon_index in carbon_indexes:
             bonds = 0
+            # Check all the dsitances and bond types for C-H, C-C, C-N, C-O
             for i, dist in enumerate(distance_matrices[carbon_index]):
                 if (
                     i in carbon_indexes
@@ -138,11 +160,14 @@ class ThresholdFitness(Fitness):
                     ):  # exp C≡O dist 1.18 A
                         bonds += 3
 
+            # If a C atom has only 3 bonds, identifies this atom as the positive charge holder
             if bonds == 3:
                 return carbon_index
 
+        # Checks the numbers of bonds for each N atom, takes into account double and triple bonds
         for nitrogen_index in nitrogen_indexes:
             bonds = 0
+            # Checks all distances and bond types for N-H, N-C, N-N and N-O
             for i, dist in enumerate(distance_matrices[nitrogen_index]):
                 if (
                     i in carbon_indexes
@@ -194,7 +219,17 @@ class ThresholdFitness(Fitness):
         )
 
     def find_acid_sites(self, distance_matrices, atomtypes_indexes):
-        """Identify the acid sites in the zeolite."""
+        """Identify the acid sites in the host structure.
+
+        Args:
+            distance_matrices (list): List of distance matrix lists for each atom with respect to all other atoms.
+            atomtypes_indexes (dict): Dictionary containing information about each atomtype, its indexes, and its "host"/"guest" nature.
+
+        Returns:
+            list: List of lists with 4 oxygen atom indexes attached to each acid site. These oxygen atoms account for the negative charge to be compensated by the cation.
+            list: List of aluminum (Al) indexes, whose bonded oxygens are not compensated by any proton. (Not used throughout the code at present.)
+        """
+
         acid_oxygens = []
         acid_al_indexes = []
 
@@ -204,14 +239,18 @@ class ThresholdFitness(Fitness):
         host_aluminum = [
             idx for idx, lbl in atomtypes_indexes.get("Al", []) if lbl == "host"
         ]
-        ## Room to add more metals if needed
+        ## Room to add more metals if needed for docking to metal slides or so
 
+        # Checks every Al atom present on the host structure
         for al_index in host_aluminum:
+            # gets the 4 closest atoms to it (hence the bonded ones), Al-O dist ~1.79
             candidate_oxygens = [
                 dist_index
                 for dist_index, dist in enumerate(distance_matrices[al_index])
-                if 0 < dist < 1.8 and dist_index in host_oxygens
+                if 0 < dist < 1.9 and dist_index in host_oxygens
             ]
+            # if there are 4 bonds and any of the 4 oxygens has an H bonded to it
+            # Then the 4 oxygens are considered acid sites and can form a bond with the cation
             if len(candidate_oxygens) == 4 and all(
                 all(
                     not (bond_dist < 1.10 and bond_dist != 0.0)
@@ -227,7 +266,19 @@ class ThresholdFitness(Fitness):
     def get_catan_distances(
         self, acid_oxygens, cation_index, distance_matrices, complex
     ):
-        """Check the cation-anion distances for the different acid sites in the zeolite."""
+        """Check the distances between the cation and anion for different acid sites in the zeolite.
+
+        Args:
+            acid_oxygens (list): List of lists with 4 oxygen atom indexes attached to each acid site; these oxygen atoms account for the negative charge to be compensated by the cation.
+            cation_index (int): Index corresponding to the carbon (C) or nitrogen (N) atom that hosts the positive charge on the molecule.
+            distance_matrices (list): List of distance matrix lists for each atom with respect to all other atoms.
+            complex (structure): Structure object representing the host-guest complex.
+
+        Returns:
+            bool: True if both requirements are met; False if either of the requirements isn't met.
+            list: List of distance lists between the cation index and the 4 acid oxygens corresponding to each acid Al.
+        """
+
         distances_catan = []
         for acid_al in acid_oxygens:
             distances_cation_anion = [
@@ -269,6 +320,16 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
     HELP = "Complexes have positive score if the minimum distance between host anion and guest cation is below the given threshold plus Complexes have positive score if the minimum distance between host and guest is above the given threshold"
 
     def __call__(self, complex):
+        """Docks a guest cation into a host with anionic spots while ensuring a minimal distance between them.
+
+        Args:
+            complex (structure): The host-guest complex object containing the host and guest molecules.
+
+        Returns:
+            int: 1 if both MinDistanceFitness and MinDistanceCationAnionFitness criteria are met.
+            float: Negative infinity (-np.inf) if either MinDistanceFitness or MinDistanceCationAnionFitness criteria are not met.
+        """
+
         pose = complex.pose
         distance_matrices = complex.pose.distance_matrix
         atomtypes_indexes = self.get_atomtypes_indexes(pose)
