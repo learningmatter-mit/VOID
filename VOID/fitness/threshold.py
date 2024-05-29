@@ -6,13 +6,21 @@ from pymatgen.core.sites import Site
 
 
 THRESHOLD = 1.5
+THRESHOLD_CATAN = 2.0
 DEFAULT_STRUCTURE = "complex"
 STRUCTURE_CHOICES = ["complex", "guest", "host"]
 DEFAULT_STEP = False
 
 
 class ThresholdFitness(Fitness):
-    def __init__(self, threshold=THRESHOLD, structure="complex", step=False, **kwargs):
+    def __init__(
+        self,
+        threshold=THRESHOLD,
+        threshold_catan=THRESHOLD_CATAN,
+        structure="complex",
+        step=False,
+        **kwargs,
+    ):
         """Fitness is positive if the minimum distance is above
             the given threshold.
 
@@ -23,6 +31,7 @@ class ThresholdFitness(Fitness):
         """
         super().__init__()
         self.threshold = threshold
+        self.threshold_catan = threshold_catan
         self.step = step
 
         if structure not in STRUCTURE_CHOICES:
@@ -38,6 +47,12 @@ class ThresholdFitness(Fitness):
             type=float,
             help="threshold for distance calculations (default: %(default)s)",
             default=THRESHOLD,
+        )
+        parser.add_argument(
+            "--threshold_catan",
+            type=float,
+            help="threshold for cation-anion distance calculations (default: %(default)s)",
+            default=THRESHOLD_CATAN,
         )
         parser.add_argument(
             "--structure",
@@ -288,14 +303,14 @@ class ThresholdFitness(Fitness):
             distances_catan.append(distances_cation_anion)
 
         if (
-            any(dist < 2.0 for sublist in distances_catan for dist in sublist)
+            any(
+                dist < self.threshold_catan
+                for sublist in distances_catan
+                for dist in sublist
+            )
             and self.normalize(self.get_distances(complex).min() - self.threshold) > 0
         ):
-            print("Optimal distance found! Aborting the run")
-            print(
-                "Distances between cation and acid oxygens are:",
-                distances_catan,
-            )
+            print("Optimal cation-anion distance found! Aborting the run")
             return True, distances_catan
 
         else:
