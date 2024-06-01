@@ -17,8 +17,7 @@ class SuccessDocker(SerialDocker):
 
         for trial in range(attempts):
             cpx = self.create_new_complex(
-                host_coords=hcoords, 
-                guest_coords=self.rotate_guest()
+                host_coords=hcoords, guest_coords=self.rotate_guest()
             )
 
             if self.fitness(cpx) >= 0:
@@ -30,7 +29,9 @@ class SuccessDocker(SerialDocker):
 
 class SuccessMonteCarloDocker(MonteCarloDocker):
     PARSER_NAME = "mcsuccess"
-    HELP = "Docks guests to host until a successful docking is found (Monte Carlo version)"
+    HELP = (
+        "Docks guests to host until a successful docking is found (Monte Carlo version)"
+    )
 
     def dock(self, attempts):
         cpx = Complex(self.host.copy(), self.guest.copy())
@@ -40,6 +41,7 @@ class SuccessMonteCarloDocker(MonteCarloDocker):
 
             if self.fitness(cpx) >= 0:
                 print(f"{trial + 1} attempts to success")
+                cpx = self.rescale(cpx)
                 return [cpx]
 
         return []
