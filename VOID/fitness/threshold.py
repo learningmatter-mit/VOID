@@ -16,9 +16,6 @@ class ThresholdFitness(Fitness):
     def __init__(
         self,
         threshold=THRESHOLD,
-        threshold_catan=THRESHOLD_CATAN,
-        cation_index=CATION_INDEX,
-        acid_sites=ACID_SITES,
         structure="complex",
         step=False,
         **kwargs,
@@ -33,7 +30,6 @@ class ThresholdFitness(Fitness):
         """
         super().__init__()
         self.threshold = threshold
-        self.threshold_catan = threshold_catan
         self.step = step
 
         if structure not in STRUCTURE_CHOICES:
@@ -51,29 +47,11 @@ class ThresholdFitness(Fitness):
             default=THRESHOLD,
         )
         parser.add_argument(
-            "--threshold_catan",
-            type=float,
-            help="threshold for cation-anion distance calculations (default: %(default)s)",
-            default=THRESHOLD_CATAN,
-        )
-        parser.add_argument(
             "--structure",
             type=str,
             choices=STRUCTURE_CHOICES,
             help="threshold for distance calculations (default: %(default)s)",
             default=DEFAULT_STRUCTURE,
-        )
-        parser.add_argument(
-            "--cation_index",
-            type=int,
-            help="index for the atom holding the positive charge in the molecule (default: %(default)s)",
-            default=CATION_INDEX,
-        )
-        parser.add_argument(
-            "--acid_sites",
-            type=list,
-            help="list of indexes for the O atoms that hold a negative charge (default: %(default)s)",
-            default=ACID_SITES,
         )
 
     def get_distances(self, complex):
@@ -130,21 +108,39 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
 
     def __init__(
         self,
-        threshold,
-        threshold_catan,
-        cation_index,
-        acid_sites,
-        structure,
-        step,
-        **kwargs,
+        threshold=THRESHOLD,
+        threshold_catan=THRESHOLD_CATAN,
+        structure=DEFAULT_STRUCTURE,
+        cation_index=None,
+        acid_sites=None,
     ):
-        super().__init__(**kwargs)
-        self.threshold = threshold
+        super().__init__(threshold)
         self.threshold_catan = threshold_catan
         self.cation_index = cation_index
         self.acid_sites = acid_sites
-        self.structure = structure
-        self.step = step
+
+    @staticmethod
+    def add_arguments(parser):
+        ThresholdFitness.add_arguments(parser)
+
+        parser.add_argument(
+            "--threshold_catan",
+            type=float,
+            help="threshold for cation-anion distance calculations (default: %(default)s)",
+            default=THRESHOLD_CATAN,
+        )
+        parser.add_argument(
+            "--cation_index",
+            type=int,
+            help="index for the atom holding the positive charge in the molecule (default: %(default)s)",
+            default=CATION_INDEX,
+        )
+        parser.add_argument(
+            "--acid_sites",
+            type=list,
+            help="list of indexes for the O atoms that hold a negative charge (default: %(default)s)",
+            default=ACID_SITES,
+        )
 
     def __call__(self, complex):
         """Docks a guest cation into a host with anionic spots while ensuring a minimal distance between them.
