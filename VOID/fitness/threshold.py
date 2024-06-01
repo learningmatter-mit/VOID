@@ -1,15 +1,15 @@
 import numpy as np
-
+import argparse
 from .base import Fitness
-
-from pymatgen.core.sites import Site
-
+import ipdb
 
 THRESHOLD = 1.5
 THRESHOLD_CATAN = 2.0
 DEFAULT_STRUCTURE = "complex"
 STRUCTURE_CHOICES = ["complex", "guest", "host"]
 DEFAULT_STEP = False
+CATION_INDEX = None
+ACID_SITES = None
 
 
 class ThresholdFitness(Fitness):
@@ -17,6 +17,8 @@ class ThresholdFitness(Fitness):
         self,
         threshold=THRESHOLD,
         threshold_catan=THRESHOLD_CATAN,
+        cation_index=CATION_INDEX,
+        acid_sites=ACID_SITES,
         structure="complex",
         step=False,
         **kwargs,
@@ -65,13 +67,13 @@ class ThresholdFitness(Fitness):
             "--cation_index",
             type=int,
             help="index for the atom holding the positive charge in the molecule (default: %(default)s)",
-            default=None,
+            default=CATION_INDEX,
         )
         parser.add_argument(
             "--acid_sites",
             type=list,
             help="list of indexes for the O atoms that hold a negative charge (default: %(default)s)",
-            default=None,
+            default=ACID_SITES,
         )
 
     def get_distances(self, complex):
@@ -102,15 +104,11 @@ class ThresholdFitness(Fitness):
             list: List of lists of distances between the cation and the anion sites.
         """
 
-        distances_catan = []
-        for acid_al in acid_sites:
-            distances_cation_anion = [
-                distance_matrices[cation_index][ox_index] for ox_index in acid_al
-            ]
-
-            distances_catan.append(distances_cation_anion)
-
-        return distances_catan
+        distances_cation_anion = [
+            [distance_matrices[cation_index][anion_index] for anion_index in anion_list]
+            for anion_list in acid_sites
+        ]
+        return distances_cation_anion
 
     def normalize(self, value):
         if self.step:
@@ -130,6 +128,24 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
     PARSER_NAME = "min_catan_distance"
     HELP = "Complexes have positive score if the minimum distance between host anion and guest cation is below the given threshold plus Complexes have positive score if the minimum distance between host and guest is above the given threshold"
 
+    def __init__(
+        self,
+        threshold,
+        threshold_catan,
+        cation_index,
+        acid_sites,
+        structure,
+        step,
+        **kwargs,
+    ):
+        super().__init__(**kwargs)
+        self.threshold = threshold
+        self.threshold_catan = threshold_catan
+        self.cation_index = cation_index
+        self.acid_sites = acid_sites
+        self.structure = structure
+        self.step = step
+
     def __call__(self, complex):
         """Docks a guest cation into a host with anionic spots while ensuring a minimal distance between them.
 
@@ -139,8 +155,11 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
         Returns:
             float: The score of the docking process. Returns normalized minimum distance if the optimal cation-anion distance is found, otherwise returns negative infinity.
         """
+
         cation_anion_distances = self.get_cation_anion_distances(
-            self.acid_sites, self.cation_index, complex.pose.distance_matrix
+            self.acid_sites,
+            self.cation_index,
+            complex.pose.distance_matrix,
         )
 
         if (
