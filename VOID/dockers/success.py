@@ -49,7 +49,7 @@ class SuccessMonteCarloDocker(MonteCarloDocker):
 
         return []
 
-    def rescale(complex):
+    def rescale(self, complex):
         """Rescale the complex to the 0-1 range so results can be visualized in direct and xyz format.
 
         Args:
