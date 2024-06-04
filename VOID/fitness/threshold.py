@@ -8,7 +8,7 @@ THRESHOLD_CATAN = 2.0
 DEFAULT_STRUCTURE = "complex"
 STRUCTURE_CHOICES = ["complex", "guest", "host"]
 DEFAULT_STEP = False
-CATION_INDEX = None
+CATION_INDEXES = None
 ACID_SITES = None
 
 
@@ -69,7 +69,7 @@ class ThresholdFitness(Fitness):
         else:
             raise ValueError("structure type not supported")
 
-    def get_cation_anion_distances(self, acid_sites, cation_index, distance_matrices):
+    def get_cation_anion_distances(self, acid_sites, cation_indexes, distance_matrices):
         """Get the distances between the cation and the anion sites.
 
         Args:
@@ -82,10 +82,14 @@ class ThresholdFitness(Fitness):
             list: List of lists of distances between the cation and the anion sites.
         """
 
-        distances_cation_anion = [
-            [distance_matrices[cation_index][anion_index] for anion_index in anion_list]
-            for anion_list in acid_sites
-        ]
+        distances_cation_anion = []
+        for cation in cation_indexes:
+            distances = [
+                distance_matrices[cation][anion_index]
+                for anion_list in acid_sites
+                for anion_index in anion_list
+            ]
+            distances_cation_anion.append(distances)
         return distances_cation_anion
 
     def normalize(self, value):
@@ -111,12 +115,12 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
         threshold=THRESHOLD,
         threshold_catan=THRESHOLD_CATAN,
         structure=DEFAULT_STRUCTURE,
-        cation_index=None,
+        cation_indexes=None,
         acid_sites=None,
     ):
         super().__init__(threshold)
         self.threshold_catan = threshold_catan
-        self.cation_index = cation_index
+        self.cation_indexes = cation_indexes
         self.acid_sites = acid_sites
 
     @staticmethod
@@ -130,10 +134,10 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
             default=THRESHOLD_CATAN,
         )
         parser.add_argument(
-            "--cation_index",
-            type=int,
-            help="index for the atom holding the positive charge in the molecule (default: %(default)s)",
-            default=CATION_INDEX,
+            "--cation_indexes",
+            type=list,
+            help="indexes for the atoms holding a positive charge in the molecule (default: %(default)s)",
+            default=CATION_INDEXES,
         )
         parser.add_argument(
             "--acid_sites",
@@ -154,7 +158,7 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
 
         cation_anion_distances = self.get_cation_anion_distances(
             self.acid_sites,
-            self.cation_index,
+            self.cation_indexes,
             complex.pose.distance_matrix,
         )
 
