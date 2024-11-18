@@ -19,9 +19,7 @@ class SuccessDocker(SerialDocker):
         hcoords = self.translate_host(point)
 
         for trial in range(attempts):
-            cpx = self.create_new_complex(
-                host_coords=hcoords, guest_coords=self.rotate_guest()
-            )
+            cpx = self.create_new_complex(host_coords=hcoords, guest_coords=self.rotate_guest())
 
             if self.fitness(cpx) >= 0:
                 print(f"{trial + 1} attempts to success")
@@ -32,9 +30,7 @@ class SuccessDocker(SerialDocker):
 
 class SuccessMonteCarloDocker(MonteCarloDocker):
     PARSER_NAME = "mcsuccess"
-    HELP = (
-        "Docks guests to host until a successful docking is found (Monte Carlo version)"
-    )
+    HELP = "Docks guests to host until a successful docking is found (Monte Carlo version)"
 
     def dock(self, attempts):
         cpx = Complex(self.host.copy(), self.guest.copy())
@@ -49,7 +45,7 @@ class SuccessMonteCarloDocker(MonteCarloDocker):
 
         return []
 
-    def rescale(self, complex):
+    def rescale(self, cpx):
         """Rescale the complex to the 0-1 range so results can be visualized in direct and xyz format.
 
         Args:
@@ -58,6 +54,7 @@ class SuccessMonteCarloDocker(MonteCarloDocker):
         Returns:
             Complex: The rescaled host-guest complex object.
         """
+        complex = cpx.copy()
         lattice = complex.pose.lattice
         frac_coords = []
         species_list = []
@@ -66,18 +63,12 @@ class SuccessMonteCarloDocker(MonteCarloDocker):
         for site in complex.pose:
             site_labels.append(site.label)
             species_list.append(site.species)
-            coords = (
-                site.frac_coords
-                if site.label == "host"
-                else np.mod(site.frac_coords, 1.0)
-            )
+            coords = site.frac_coords if site.label == "host" else np.mod(site.frac_coords, 1.0)
             frac_coords.append(coords)
 
         site_properties = {"label": site_labels}
 
-        updated_structure = Structure(
-            lattice, species_list, frac_coords, site_properties=site_properties
-        )
+        updated_structure = Structure(lattice, species_list, frac_coords, site_properties=site_properties)
 
         num_host_atoms = len(complex.host)
 
