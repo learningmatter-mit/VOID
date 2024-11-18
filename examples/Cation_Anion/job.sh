@@ -13,5 +13,5 @@ echo "If job fails to reach a final pose you can tune --threshold_catan, --thres
 echo ""
 echo "Running Monte Carlo docking"
 echo ""
-python3 ../../scripts/dock.py structure.cif DEB+.xyz -d mcsuccess -s random -f min_catan_distance -o mcdocked --threshold_catan 3.1 --threshold 1.5 --attempts 20000 --cation_indexes 225 --acid_sites 84,92,90,96
+python3 ../../scripts/dock.py structure.cif DEB+.xyz -d mcsuccess -s random -f min_catan_distance -o mcdocked --threshold_catan 3.1 --threshold 1.5 --attempts 20000 --cation_indexes 225 --acid_sites 76,84,92,96
 echo "Final pose save to mcdocked folder"

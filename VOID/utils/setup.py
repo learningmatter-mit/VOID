@@ -13,11 +13,7 @@ class SetupRun:
 
     def get_docker_kwargs(self, docker_class):
         if self.args["docker"] in ["mcdocker", "mcsuccess"]:
-            return {
-                k: self.args[k]
-                for k in ["temperature", "temperature_profile"]
-                if k in self.args
-            }
+            return {k: self.args[k] for k in ["temperature", "temperature_profile"] if k in self.args}
 
         return {}
 
@@ -29,13 +25,7 @@ class SetupRun:
         fitness = self.get_fitness()
         host, guest = self.get_structures()
 
-        docker = cls(
-            host=host,
-            guest=guest,
-            sampler=sampler,
-            fitness=fitness,
-            **self.get_docker_kwargs(cls)
-        )
+        docker = cls(host=host, guest=guest, sampler=sampler, fitness=fitness, **self.get_docker_kwargs(cls))
 
         return docker
 
