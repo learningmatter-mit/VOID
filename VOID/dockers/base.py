@@ -50,18 +50,20 @@ class Docker(ParseableObject):
         if newcoords is None:
             return self.guest.copy()
 
-        return Molecule(species=self.guest.species, coords=newcoords,)
+        return Molecule(
+            species=self.guest.species,
+            coords=newcoords,
+        )
 
     def create_new_complex(self, host_coords, guest_coords):
         return Complex(
             self.new_host(newcoords=host_coords),
             self.new_guest(newcoords=guest_coords),
-            add_transform=False
+            add_transform=False,
         )
 
     def dock(self, attempts: int) -> List[Complex]:
-        """Docks the guest into the host.
-        """
+        """Docks the guest into the host."""
         complexes = []
         for point in self.sampler.get_points(self.host):
             complexes += self.dock_at_point(point, attempts)
