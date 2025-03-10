@@ -76,6 +76,12 @@ This will dock the molecule contained in `molecule.xyz` to the zeolite in `AFI.c
 
 For more information on the dockers, samplers and fitness functions available, run `dock.py --help`. Help on further commands are available once the choice of dockers, samplers and fitness functions are made, e.g. `dock.py -d batch -s voronoi_cluster -f min_distance --help`.
 
+A new feature has recently been introduced that enables docking based on the acid site positions in the zeolite framework and the cation indexes on host molecules using a modified Monte Carlo algorithm. One can specify the maximum allowed distance between cation and acid sites in Amstrongs, as well as their corresponding indexes in the final structure, with the following command
+
+```bash
+python3 ../../scripts/dock.py structure.cif molecule.xyz -d mcsuccess -s random -f min_catan_distance -o ~/Desktop/mcdocked --threshold_catan 3 --cation_indexes 1 --acid_sites 2,3,4,5
+```
+
 ## Examples
 
 Further examples can be seen in the [examples](examples/README.md) folder.
