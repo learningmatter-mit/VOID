@@ -25,7 +25,7 @@ You need to activate the `VOID` environment to install the dependencies for the 
 conda activate VOID
 ```
 
-If you are installing VOID in a python environment > python3.6 and having problems when compiling zeo++, please refer to XXX in order to see how to solve them.
+If you are installing VOID in a Python environment (> Python 3.6) and encounter problems when compiling Zeo++, please refer to [Compiling Zeo++ in Python >3.6 Environments](#compiling-zeo--in-python-36-environments) for a solution.
 
 ### Zeo++ dependency
 
@@ -88,7 +88,7 @@ python3 ../../scripts/dock.py structure.cif molecule.xyz -d mcsuccess -s random 
 
 Further examples can be seen in the [examples](examples/README.md) folder.
 
-## Compiling Zeo++ in Python > 3.6 Environments
+[## Compiling Zeo++ in Python > 3.6 Environments](#compiling-zeo--in-python-36-environments)
 
 Open the file located at:
 
@@ -126,7 +126,7 @@ After making this change, you should be able to continue with the installation s
  69     #  language_level        int     currently 2 or 3 for Python 2/3
  70 
  71     cython_scope = None
- 72     language_level = None  # warn when not set but default to Py2 --> change None to 3
+ 72     language_level = 3  # warn when not set but default to Py2 --> change None to 3
 ```
 
 
