@@ -25,6 +25,8 @@ You need to activate the `VOID` environment to install the dependencies for the 
 conda activate VOID
 ```
 
+If you are installing VOID in a python environment > python3.6 and having problems when compiling zeo++, please refer to XXX in order to see how to solve them.
+
 ### Zeo++ dependency
 
 Zeo++ and its interface to pymatgen are required to use the Voronoi sampler. The following instructions for their installation are based off the original instructions at the [pymatgen documentation](https://pymatgen.org/pymatgen.io.zeopp.html#zeo-installation-steps). 
@@ -85,6 +87,48 @@ python3 ../../scripts/dock.py structure.cif molecule.xyz -d mcsuccess -s random 
 ## Examples
 
 Further examples can be seen in the [examples](examples/README.md) folder.
+
+## Compiling Zeo++ in Python > 3.6 Environments
+
+Open the file located at:
+
+```bash
+~/{your_environment}/lib/python3.9/site-packages/Cython/Compiler/Main.py
+```
+
+Navigate to line 72 and change:
+
+```bash
+language_level = None
+```
+
+to
+
+```bash
+language_level = 3
+```
+
+Save and close the file.
+
+After making this change, you should be able to continue with the installation steps described above without any issues.
+
+```bash
+ 59 class Context(object):
+ 60     #  This class encapsulates the context needed for compiling
+ 61     #  one or more Cython implementation files along with their
+ 62     #  associated and imported declaration files. It includes
+ 63     #  the root of the module import namespace and the list
+ 64     #  of directories to search for include files.
+ 65     #
+ 66     #  modules               {string : ModuleScope}
+ 67     #  include_directories   [string]
+ 68     #  future_directives     [object]
+ 69     #  language_level        int     currently 2 or 3 for Python 2/3
+ 70 
+ 71     cython_scope = None
+ 72     language_level = None  # warn when not set but default to Py2 --> change None to 3
+```
+
 
 ## Nomenclature
 
