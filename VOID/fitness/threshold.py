@@ -215,13 +215,13 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
                     # Assign bond order based on distance relative to typical covalent radii
                     if dist >= 1.15 and dist <= 1.25:
                         order = "TRIPLE"
-                    elif dist >= 1.26 and dist <= 1.37:
+                    elif dist >= 1.26 and dist <= 1.34:
                         order = "DOUBLE"
                     elif dist >=1.38 and dist <= 1.42:
                         order = "AROMATIC"
                     else:
                         order = "SINGLE"
-                    
+
                     neighbor_map[i].append(j)
                     neighbor_map[j].append(i)
                     bond_order_map[i].append(order)
@@ -260,7 +260,14 @@ class MinDistanceCationAnionFitness(ThresholdFitness):
         
         # Use computed cation indexes if none were provided
         cation_indexes = self.cation_indexes or self.compute_cation_indexes(complex)
-
+        #print(cation_indexes, acid_sites)
+        if not acid_sites or not cation_indexes:
+            missing = []
+            if not acid_sites:
+                missing.append("acid_sites")
+            if not cation_indexes:
+                missing.append("cation_indexes")
+            raise ValueError(f"The following required variables are missing or empty: {', '.join(missing)}, condiser giving them as an input on the command line with --acid_sites and --cation_indexes")
         cation_anion_distances = self.get_cation_anion_distances(
             acid_sites,
             cation_indexes,
