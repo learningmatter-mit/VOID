@@ -17,7 +17,7 @@ class MoleculeAnalyzer:
         self.update_properties()
 
     def update_properties(self):
-        self.molgraph = MoleculeGraph.with_local_env_strategy(self.mol, JmolNN())
+        self.molgraph = MoleculeGraph.from_local_env_strategy(self.mol, JmolNN())
         # self.rings = self.molgraph.find_rings()
         self.rings = self.find_rings()
         self.bonds = self.molgraph.graph.edges(data=False)
